@@ -80,6 +80,45 @@ class AccessRequestResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('approve')
+                    ->label('Beri Akses')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn (AccessRequest $record): bool => $record->status !== 'approved')
+                    ->form([
+                        DateTimePicker::make('valid_until')
+                            ->label('Batas Waktu Akses')
+                            ->required()
+                            ->default(now()->addDay())
+                            ->displayFormat('d M Y H:i'),
+                    ])
+                    ->action(function (AccessRequest $record, array $data): void {
+                        $record->update([
+                            'status' => 'approved',
+                            'valid_until' => $data['valid_until'],
+                        ]);
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Beri Akses Menonton')
+                    ->modalDescription('Tentukan batas waktu akses menonton untuk customer ini.')
+                    ->modalSubmitActionLabel('Setujui & Beri Akses'),
+
+                Tables\Actions\Action::make('reject')
+                    ->label('Tolak')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->visible(fn (AccessRequest $record): bool => $record->status === 'pending')
+                    ->requiresConfirmation()
+                    ->action(function (AccessRequest $record): void {
+                        $record->update([
+                            'status' => 'rejected',
+                            'valid_until' => null,
+                        ]);
+                    })
+                    ->modalHeading('Tolak Permintaan Akses')
+                    ->modalDescription('Apakah Anda yakin ingin menolak permintaan akses menonton ini?')
+                    ->modalSubmitActionLabel('Tolak Akses'),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ]);
