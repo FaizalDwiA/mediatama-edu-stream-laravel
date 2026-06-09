@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CustomerVideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,4 +18,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [CustomerVideoController::class, 'index'])->name('dashboard');
+    Route::post('/video/{id}/request', [CustomerVideoController::class, 'requestAccess'])->name('video.request');
+    Route::get('/video/{id}/watch', [CustomerVideoController::class, 'watch'])->name('video.watch');
+});
+
+
+require __DIR__ . '/auth.php';

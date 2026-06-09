@@ -13,7 +13,7 @@ class VideoPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class VideoPolicy
      */
     public function view(User $user, Video $videos): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class VideoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class VideoPolicy
      */
     public function update(User $user, Video $videos): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class VideoPolicy
      */
     public function delete(User $user, Video $videos): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class VideoPolicy
      */
     public function restore(User $user, Video $videos): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class VideoPolicy
      */
     public function forceDelete(User $user, Video $videos): bool
     {
-        return false;
+        return true;
     }
 }
