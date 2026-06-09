@@ -7,6 +7,22 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Meta Tags & SEO -->
+        <meta name="description" content="Edustream - Platform Streaming Video Edukasi Interaktif Terlengkap.">
+        <meta name="keywords" content="edustream, edukasi, streaming, video, belajar, tutorial, interaktif">
+        <meta name="author" content="Edustream">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Edustream - Media Streaming & Interactive Education">
+        <meta property="og:description" content="Tonton video edukasi interaktif dan tingkatkan keahlianmu di Edustream.">
+        <meta property="og:image" content="{{ asset('img/logo/logo1.png') }}">
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo/logo1.ico') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/logo/logo1.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('img/logo/logo1.png') }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
