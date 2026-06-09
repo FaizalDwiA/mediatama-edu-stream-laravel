@@ -28,6 +28,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // 💡 AMBIL DATA USER YANG BARU SAJA LOGIN
+        $user = Auth::user();
+
+        // 💡 ATUR PENGALIHAN BERDASARKAN ROLE
+        if ($user->role === 'admin') {
+            return redirect()->intended('/admin'); // Admin masuk ke Filament
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
