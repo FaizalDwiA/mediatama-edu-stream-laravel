@@ -68,6 +68,26 @@
             color: #a855f7;
         }
 
+        /* Video Catalog Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Video Card styling */
         .video-card {
             background: rgba(17, 24, 39, 0.6);
@@ -277,6 +297,31 @@
             transform: translateY(0);
         }
 
+        /* Access Limit Status Layout */
+        .access-status-approved {
+            color: #34d399 !important; /* Green text */
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.375rem !important;
+            margin-bottom: 0.75rem !important;
+            margin-top: 0.5rem !important;
+        }
+
+        .access-status-expired {
+            color: #f87171 !important; /* Red text */
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.375rem !important;
+            margin-bottom: 0.75rem !important;
+            margin-top: 0.5rem !important;
+        }
+
         /* Session Alert Styling */
         .session-alert {
             border-radius: 14px;
@@ -347,7 +392,7 @@
             </h2>
 
             <!-- Video Catalog Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="video-grid">
                 @forelse($videos as $video)
                     @php
                         $userRequest = $requests->get($video->id);
@@ -396,7 +441,7 @@
                                     </button>
                                 </form>
                             @elseif($userRequest->status === 'approved' && !$isExpired)
-                                <div class="mb-3 text-xs text-green-400 font-semibold flex items-center justify-center gap-1.5">
+                                <div class="access-status-approved">
                                     <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
@@ -406,7 +451,7 @@
                                     Tonton Video
                                 </a>
                             @elseif($isExpired)
-                                <div class="mb-3 text-xs text-red-400 font-semibold flex items-center justify-center gap-1.5">
+                                <div class="access-status-expired">
                                     <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                                     </svg>
