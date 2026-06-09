@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Videos extends Model
+class Video extends Model
 {
-    /** @use HasFactory<\Database\Factories\VideosFactory> */
+    /** @use HasFactory<\Database\Factories\VideoFactory> */
     use HasFactory;
 
     protected $fillable = [

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Videos;
-use App\Http\Requests\StoreVideosRequest;
-use App\Http\Requests\UpdateVideosRequest;
+use App\Models\Video;
+use App\Http\Requests\StoreVideoRequest;
+use App\Http\Requests\UpdateVideoRequest;
 
-class VideosController extends Controller
+class VideoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class VideosController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreVideosRequest $request)
+    public function store(StoreVideoRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class VideosController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Videos $videos)
+    public function show(Video $videos)
     {
         //
     }
@@ -43,7 +43,7 @@ class VideosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Videos $videos)
+    public function edit(Video $videos)
     {
         //
     }
@@ -51,7 +51,7 @@ class VideosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateVideosRequest $request, Videos $videos)
+    public function update(UpdateVideoRequest $request, Video $videos)
     {
         //
     }
@@ -59,7 +59,7 @@ class VideosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Videos $videos)
+    public function destroy(Video $videos)
     {
         //
     }

@@ -29,6 +29,6 @@ class AccessRequest extends Model
 
     public function video(): BelongsTo
     {
-        return $this->belongsTo(Videos::class);
+        return $this->belongsTo(Video::class);
     }
 }

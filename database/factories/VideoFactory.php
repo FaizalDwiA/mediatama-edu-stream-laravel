@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Videos;
+use App\Models\Video;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Videos>
+ * @extends Factory<Video>
  */
-class VideosFactory extends Factory
+class VideoFactory extends Factory
 {
     /**
      * Define the model's default state.
