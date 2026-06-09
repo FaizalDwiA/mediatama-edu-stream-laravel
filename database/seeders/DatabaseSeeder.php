@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,9 +18,27 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+
+        // 1. Membuat Akun Demo Admin Default
+        User::create([
+            'name' => 'Admin Mediatama',
+            'email' => 'admin@edustream.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'email_verified_at' => now()
+        ]);
+
+        // 2. Membuat Akun Demo Customer Default
+        User::create([
+            'name' => 'Budi Santoso',
+            'email' => 'customer@edustream.com',
+            'password' => Hash::make('password'),
+            'role' => 'customer',
+            'email_verified_at' => now()
         ]);
     }
 }
