@@ -1,0 +1,274 @@
+/* ==========================================================================
+   EDUSTREAM PREMIUM THEME (DARK & LIGHT COOPERATIVE)
+   ========================================================================== */
+
+/* Font Family Configuration */
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* Common Sidebar Button Base */
+.fi-sidebar-item-button {
+    border-radius: 0.75rem !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-bottom: 0.35rem !important;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
+    position: relative;
+    border: 1px solid transparent !important;
+}
+
+/* Common Widget Card Base */
+.fi-section,
+.fi-wi-stats-overview-stat-card,
+.fi-g-stats-overview-card,
+.fi-wi-widget {
+    border-radius: 1.25rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Custom Scrollbar Base */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   A. DARK MODE ONLY (.dark)
+   -------------------------------------------------------------------------- */
+.dark body {
+    background-color: #05070c !important;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.09) 0px, transparent 45%),
+        radial-gradient(at 90% 10%, rgba(59, 130, 246, 0.08) 0px, transparent 45%), /* Blue supporting color */
+        radial-gradient(at 50% 80%, rgba(59, 130, 246, 0.03) 0px, transparent 50%) !important;
+    background-attachment: fixed !important;
+}
+
+/* Custom Scrollbar in Dark Mode */
+.dark ::-webkit-scrollbar-track {
+    background: rgba(5, 7, 12, 0.5);
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.2) !important; /* Blue thumb */
+    border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Glassmorphism for Sidebar in Dark Mode */
+.dark .fi-sidebar {
+    background-color: rgba(9, 12, 20, 0.65) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+.dark .fi-sidebar-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Inactive Sidebar Hover in Dark Mode */
+.dark .fi-sidebar-item-button:not(.fi-active):not(.bg-primary-500):hover {
+    background: rgba(59, 130, 246, 0.06) !important; /* Blue hover glow */
+    border-color: rgba(59, 130, 246, 0.2) !important;
+    color: #3b82f6 !important;
+    transform: translateX(5px);
+}
+.dark .fi-sidebar-item-button:not(.fi-active):not(.bg-primary-500):hover .fi-sidebar-item-icon {
+    color: #3b82f6 !important;
+}
+
+/* Active Sidebar Item in Dark Mode (Glow Orange + Blue Neon Hints) */
+.dark .fi-sidebar-item-button.fi-active,
+.dark .fi-sidebar-item-button.bg-primary-500 {
+    background: linear-gradient(135deg, #f97316 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 
+        0 4px 20px 0 rgba(249, 115, 22, 0.45),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2) !important;
+}
+.dark .fi-sidebar-item-button.fi-active::after,
+.dark .fi-sidebar-item-button.bg-primary-500::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 25%;
+    height: 50%;
+    width: 4px;
+    background-color: #3b82f6; /* Blue active stripe indicator */
+    border-radius: 9999px;
+    box-shadow: 0 0 8px #3b82f6;
+}
+
+/* Glassy Topbar in Dark Mode */
+.dark .fi-topbar {
+    background-color: rgba(5, 7, 12, 0.7) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Glassmorphism for Cards in Dark Mode */
+.dark .fi-section,
+.dark .fi-wi-stats-overview-stat-card,
+.dark .fi-g-stats-overview-card,
+.dark .fi-wi-widget {
+    background: rgba(13, 18, 33, 0.45) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(59, 130, 246, 0.05) !important; /* Subtle blue border glow */
+    box-shadow: 
+        0 10px 30px -10px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+.dark .fi-section:hover,
+.dark .fi-wi-stats-overview-stat-card:hover,
+.dark .fi-g-stats-overview-card:hover {
+    border-color: rgba(59, 130, 246, 0.25) !important; /* Glowing blue hover border */
+    box-shadow: 
+        0 15px 35px -5px rgba(59, 130, 246, 0.1),
+        0 8px 25px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.12) !important;
+    transform: translateY(-4px);
+}
+
+/* Stat numbers in Dark Mode */
+.dark .fi-wi-stats-overview-stat-value {
+    color: #f97316 !important;
+    text-shadow: 0 0 15px rgba(249, 115, 22, 0.35);
+}
+
+.dark .fi-wi-account-widget img {
+    border: 2px solid #3b82f6 !important; /* Blue border avatar */
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark .fi-btn-color-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3) !important;
+}
+
+.dark footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.03) !important;
+    background: linear-gradient(to top, rgba(5, 7, 12, 0.9) 0%, transparent 100%) !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   B. LIGHT MODE ONLY (Without .dark)
+   -------------------------------------------------------------------------- */
+html:not(.dark) body {
+    background-color: #f8fafc !important;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.04) 0px, transparent 40%),
+        radial-gradient(at 90% 10%, rgba(59, 130, 246, 0.05) 0px, transparent 40%) !important;
+    background-attachment: fixed !important;
+}
+
+/* Scrollbar in Light Mode */
+html:not(.dark) ::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.5);
+}
+html:not(.dark) ::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-radius: 9999px;
+}
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Sidebar in Light Mode */
+html:not(.dark) .fi-sidebar {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+html:not(.dark) .fi-sidebar-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Inactive Sidebar Hover in Light Mode */
+html:not(.dark) .fi-sidebar-item-button:not(.fi-active):not(.bg-primary-500):hover {
+    background: rgba(59, 130, 246, 0.05) !important;
+    border-color: rgba(59, 130, 246, 0.15) !important;
+    color: #3b82f6 !important;
+    transform: translateX(4px);
+}
+html:not(.dark) .fi-sidebar-item-button:not(.fi-active):not(.bg-primary-500):hover .fi-sidebar-item-icon {
+    color: #3b82f6 !important;
+}
+
+/* Active Sidebar Item in Light Mode */
+html:not(.dark) .fi-sidebar-item-button.fi-active,
+html:not(.dark) .fi-sidebar-item-button.bg-primary-500 {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.25) !important;
+}
+html:not(.dark) .fi-sidebar-item-button.fi-active::after,
+html:not(.dark) .fi-sidebar-item-button.bg-primary-500::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 25%;
+    height: 50%;
+    width: 4px;
+    background-color: #3b82f6; /* Blue active stripe indicator */
+    border-radius: 9999px;
+    box-shadow: 0 0 6px #3b82f6;
+}
+
+/* Topbar in Light Mode */
+html:not(.dark) .fi-topbar {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Glassmorphism for Cards in Light Mode */
+html:not(.dark) .fi-section,
+html:not(.dark) .fi-wi-stats-overview-stat-card,
+html:not(.dark) .fi-g-stats-overview-card,
+html:not(.dark) .fi-wi-widget {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 
+        0 10px 25px -10px rgba(0, 0, 0, 0.05),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+html:not(.dark) .fi-section:hover,
+html:not(.dark) .fi-wi-stats-overview-stat-card:hover,
+html:not(.dark) .fi-g-stats-overview-card:hover {
+    border-color: rgba(59, 130, 246, 0.25) !important;
+    box-shadow: 
+        0 15px 30px -5px rgba(59, 130, 246, 0.05),
+        0 8px 20px rgba(0, 0, 0, 0.04),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-3px);
+}
+
+/* Stat numbers in Light Mode */
+html:not(.dark) .fi-wi-stats-overview-stat-value {
+    color: #f97316 !important;
+}
+
+html:not(.dark) .fi-wi-account-widget img {
+    border: 2px solid #3b82f6 !important;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.2) !important;
+}
+
+html:not(.dark) .fi-btn-color-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2) !important;
+}
+
+html:not(.dark) footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.03) !important;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.9) 0%, transparent 100%) !important;
+}
