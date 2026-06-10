@@ -524,7 +524,12 @@
                     @endif
                     <!-- Video Thumbnail with hover overlay play button -->
                     <div class="video-thumbnail">
-                        <div class="video-thumbnail-bg grad-{{ $gradIndex }}"></div>
+                        @if($video->thumbnail)
+                            <div class="video-thumbnail-bg"
+                                style="background-image: url('{{ asset('storage/' . $video->thumbnail) }}'); background-size: cover; background-position: center;"></div>
+                        @else
+                            <div class="video-thumbnail-bg grad-{{ $gradIndex }}"></div>
+                        @endif
                         @if ($isApproved && $video->video_path)
                             <video class="preview-video" src="{{ asset('storage/' . $video->video_path) }}" muted loop
                                 playsinline preload="metadata"></video>
