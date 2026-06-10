@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [CustomerVideoController::class, 'index'])->name('dashboard');
     Route::post('/video/{id}/request', [CustomerVideoController::class, 'requestAccess'])->name('video.request');
     Route::get('/video/{id}/watch', [CustomerVideoController::class, 'watch'])->name('video.watch');
+    Route::get('/video/{id}/stream', [CustomerVideoController::class, 'stream'])->name('video.stream');
 });
 
 

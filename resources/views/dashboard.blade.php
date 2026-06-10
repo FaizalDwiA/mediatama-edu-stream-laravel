@@ -148,20 +148,98 @@
                 bottom: 0 !important;
                 left: 0 !important;
                 width: 100% !important;
-                height: 3px !important;
+                height: 4px !important;
                 background-color: rgba(255, 255, 255, 0.2) !important;
-                z-index: 10 !important;
+                z-index: 30 !important;
                 opacity: 0;
-                transition: opacity 0.3s ease !important;
-                pointer-events: none !important;
+                transition: opacity 0.3s ease, height 0.12s ease !important;
+                pointer-events: auto !important;
+                cursor: pointer !important;
+            }
+
+            .video-card:hover .video-progress-bar {
+                opacity: 1;
+            }
+
+            .video-progress-bar:hover,
+            .video-progress-bar.dragging {
+                height: 8px !important;
             }
 
             .video-progress-fill {
                 height: 100% !important;
-                width: 0% !important;
-                background: linear-gradient(to right, #ff4444, #ff6b35) !important;
-                border-radius: 0 2px 2px 0 !important;
-                transition: width 0.1s linear !important;
+                width: 0%;
+                background: #ef4444 !important; /* YouTube Red */
+                transition: width 0.08s linear !important;
+            }
+
+            .video-progress-scrubber {
+                position: absolute !important;
+                top: 50% !important;
+                left: 0%;
+                transform: translate(-50%, -50%) !important;
+                width: 11px !important;
+                height: 11px !important;
+                border-radius: 50% !important;
+                background: #ef4444 !important;
+                opacity: 0;
+                transition: opacity 0.15s ease !important;
+                pointer-events: none !important;
+                z-index: 35 !important;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+            }
+
+            .video-progress-bar:hover .video-progress-scrubber,
+            .video-progress-bar.dragging .video-progress-scrubber {
+                opacity: 1;
+            }
+
+            /* Card Video Preview Tooltip */
+            .card-preview-tooltip {
+                position: absolute !important;
+                bottom: 18px !important;
+                left: 0;
+                transform: translateX(-50%) !important;
+                width: 110px !important;
+                background: rgba(15, 23, 42, 0.95) !important;
+                border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                border-radius: 6px !important;
+                padding: 2px !important;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+                opacity: 0;
+                pointer-events: none !important;
+                transition: opacity 0.15s ease !important;
+                z-index: 50 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                overflow: hidden !important;
+            }
+
+            .card-preview-tooltip.active {
+                opacity: 1 !important;
+            }
+
+            .card-preview-video-container {
+                width: 104px !important;
+                height: 58px !important; /* 16:9 ratio */
+                border-radius: 4px !important;
+                overflow: hidden !important;
+                background: #000 !important;
+            }
+
+            .card-preview-video-container video {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+            }
+
+            .card-preview-time-badge {
+                margin-top: 2px !important;
+                color: #ffffff !important;
+                font-size: 0.65rem !important;
+                font-family: monospace, sans-serif !important;
+                font-weight: 600 !important;
             }
 
             /* Video Thumbnail Card */
@@ -557,7 +635,15 @@
 
                             <!-- YouTube-style Progress Bar -->
                             <div class="video-progress-bar">
+                                <!-- Card Preview Tooltip -->
+                                <div class="card-preview-tooltip">
+                                    <div class="card-preview-video-container">
+                                        <video class="card-preview-video-element" src="{{ route('video.stream', $video->id) }}" muted preload="auto"></video>
+                                    </div>
+                                    <div class="card-preview-time-badge">0:00</div>
+                                </div>
                                 <div class="video-progress-fill"></div>
+                                <div class="video-progress-scrubber"></div>
                             </div>
                         @endif
                         <div class="play-overlay">
@@ -696,6 +782,10 @@
                 const durationBadge = card.querySelector('.video-duration-badge');
                 const progressBar = card.querySelector('.video-progress-bar');
                 const progressFill = card.querySelector('.video-progress-fill');
+                const progressScrubber = card.querySelector('.video-progress-scrubber');
+                const cardTooltip = card.querySelector('.card-preview-tooltip');
+                const cardPreviewVid = card.querySelector('.card-preview-video-element');
+                const cardPreviewTime = card.querySelector('.card-preview-time-badge');
 
                 if (!video) return;
 
@@ -710,11 +800,17 @@
                     setDuration();
                 }
 
+                let isDragging = false;
+
                 // Update progress bar as video plays
                 video.addEventListener('timeupdate', () => {
+                    if (isDragging) return;
                     if (progressFill && video.duration) {
                         const pct = (video.currentTime / video.duration) * 100;
                         progressFill.style.width = pct + '%';
+                        if (progressScrubber) {
+                            progressScrubber.style.left = pct + '%';
+                        }
                     }
                 });
 
@@ -738,8 +834,14 @@
                     if (muteBtn) muteBtn.style.opacity = '0';
                     if (progressBar) progressBar.style.opacity = '0';
                     if (progressFill) progressFill.style.width = '0%';
+                    if (progressScrubber) progressScrubber.style.left = '0%';
+                    if (cardTooltip) cardTooltip.classList.remove('active');
                     video.pause();
                     video.currentTime = 0;
+                    if (cardPreviewVid) {
+                        cardPreviewVid.pause();
+                        cardPreviewVid.currentTime = 0;
+                    }
                 });
 
                 if (muteBtn) {
@@ -759,6 +861,152 @@
                             iconMuted.classList.add('hidden');
                             iconUnmuted.classList.remove('hidden');
                         }
+                    });
+                }
+
+                if (progressBar) {
+                    function getTimelinePosition(e) {
+                        const rect = progressBar.getBoundingClientRect();
+                        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                        let x = clientX - rect.left;
+                        x = Math.max(0, Math.min(x, rect.width));
+                        return x / rect.width;
+                    }
+
+                    function seek(e) {
+                        const percent = getTimelinePosition(e);
+                        const time = percent * video.duration;
+                        if (!isNaN(time)) {
+                            video.currentTime = time;
+                        }
+                    }
+
+                    progressBar.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        seek(e);
+                    });
+
+                    progressBar.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        isDragging = true;
+                        progressBar.classList.add('dragging');
+                        seek(e);
+
+                        const moveHandler = (moveEvent) => {
+                            if (isDragging) {
+                                moveEvent.preventDefault();
+                                moveEvent.stopPropagation();
+                                const percent = getTimelinePosition(moveEvent);
+                                if (progressFill) progressFill.style.width = `${percent * 100}%`;
+                                if (progressScrubber) progressScrubber.style.left = `${percent * 100}%`;
+                                
+                                const time = percent * video.duration;
+                                if (!isNaN(time)) {
+                                    video.currentTime = time;
+                                    
+                                    const rect = progressBar.getBoundingClientRect();
+                                    const clientX = moveEvent.clientX;
+                                    let x = clientX - rect.left;
+                                    x = Math.max(0, Math.min(x, rect.width));
+                                    if (cardTooltip) {
+                                        cardTooltip.style.left = `${x}px`;
+                                        cardTooltip.classList.add('active');
+                                    }
+                                    if (cardPreviewTime) cardPreviewTime.textContent = formatTime(time);
+                                    if (cardPreviewVid) cardPreviewVid.currentTime = time;
+                                }
+                            }
+                        };
+
+                        const upHandler = (upEvent) => {
+                            if (isDragging) {
+                                upEvent.preventDefault();
+                                upEvent.stopPropagation();
+                                seek(upEvent);
+                                isDragging = false;
+                                progressBar.classList.remove('dragging');
+                                if (cardTooltip) cardTooltip.classList.remove('active');
+                                document.removeEventListener('mousemove', moveHandler);
+                                document.removeEventListener('mouseup', upHandler);
+                            }
+                        };
+
+                        document.addEventListener('mousemove', moveHandler);
+                        document.addEventListener('mouseup', upHandler);
+                    });
+
+                    progressBar.addEventListener('touchstart', (e) => {
+                        e.stopPropagation();
+                        isDragging = true;
+                        progressBar.classList.add('dragging');
+                        seek(e);
+
+                        const touchMoveHandler = (moveEvent) => {
+                            if (isDragging) {
+                                moveEvent.stopPropagation();
+                                const percent = getTimelinePosition(moveEvent);
+                                if (progressFill) progressFill.style.width = `${percent * 100}%`;
+                                if (progressScrubber) progressScrubber.style.left = `${percent * 100}%`;
+                                
+                                const time = percent * video.duration;
+                                if (!isNaN(time)) {
+                                    video.currentTime = time;
+                                    
+                                    const rect = progressBar.getBoundingClientRect();
+                                    const clientX = moveEvent.touches[0].clientX;
+                                    let x = clientX - rect.left;
+                                    x = Math.max(0, Math.min(x, rect.width));
+                                    if (cardTooltip) {
+                                        cardTooltip.style.left = `${x}px`;
+                                        cardTooltip.classList.add('active');
+                                    }
+                                    if (cardPreviewTime) cardPreviewTime.textContent = formatTime(time);
+                                    if (cardPreviewVid) cardPreviewVid.currentTime = time;
+                                }
+                            }
+                        };
+
+                        const touchEndHandler = (endEvent) => {
+                            if (isDragging) {
+                                endEvent.stopPropagation();
+                                isDragging = false;
+                                progressBar.classList.remove('dragging');
+                                if (cardTooltip) cardTooltip.classList.remove('active');
+                                const duration = video.duration || 0;
+                                const currentPct = parseFloat(progressFill.style.width) / 100;
+                                const time = currentPct * duration;
+                                if (!isNaN(time)) {
+                                    video.currentTime = time;
+                                }
+                                document.removeEventListener('touchmove', touchMoveHandler);
+                                document.removeEventListener('touchend', touchEndHandler);
+                            }
+                        };
+
+                        document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+                        document.addEventListener('touchend', touchEndHandler);
+                    }, { passive: true });
+
+                    progressBar.addEventListener('mousemove', (e) => {
+                        const rect = progressBar.getBoundingClientRect();
+                        let x = e.clientX - rect.left;
+                        x = Math.max(0, Math.min(x, rect.width));
+                        const percent = x / rect.width;
+                        const time = percent * video.duration;
+                        if (!isNaN(time)) {
+                            if (cardTooltip) {
+                                cardTooltip.style.left = `${x}px`;
+                                cardTooltip.classList.add('active');
+                            }
+                            if (cardPreviewTime) cardPreviewTime.textContent = formatTime(time);
+                            if (cardPreviewVid) cardPreviewVid.currentTime = time;
+                        }
+                    });
+
+                    progressBar.addEventListener('mouseleave', () => {
+                        if (cardTooltip) cardTooltip.classList.remove('active');
                     });
                 }
             });

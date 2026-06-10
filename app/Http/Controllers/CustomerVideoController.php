@@ -85,4 +85,86 @@ class CustomerVideoController extends Controller
 
         return view('watch', compact('video', 'access'));
     }
+
+    public function stream($id)
+    {
+        $userId = auth()->id();
+        $video = Video::findOrFail($id);
+
+        // Cek izin akses di database
+        $access = AccessRequest::where('user_id', $userId)
+            ->where('video_id', $id)
+            ->where('status', 'approved')
+            ->first();
+
+        // Validasi akses aktif
+        if (!$access || !$access->valid_until || Carbon::now()->gt($access->valid_until)) {
+            if ($access) {
+                $access->update(['status' => 'expired']);
+            }
+            abort(403, 'Akses ditolak!');
+        }
+
+        $path = storage_path('app/public/' . $video->video_path);
+
+        if (!file_exists($path)) {
+            abort(404, 'File video tidak ditemukan.');
+        }
+
+        $stream = fopen($path, 'rb');
+        $size   = filesize($path);
+        $length = $size;
+        $start  = 0;
+        $end    = $size - 1;
+
+        $status = 200;
+        $headers = [
+            'Content-Type'   => 'video/mp4',
+            'Accept-Ranges'  => 'bytes',
+            'Content-Length' => $size,
+        ];
+
+        if (request()->header('Range')) {
+            $status = 206;
+            list(, $range) = explode('=', request()->header('Range'), 2);
+            if (strpos($range, ',') !== false) {
+                return response('Requested Range Not Satisfiable', 416, [
+                    'Content-Range' => "bytes */$size"
+                ]);
+            }
+            
+            if ($range == '-') {
+                $c_start = 0;
+            } else {
+                $range   = explode('-', $range);
+                $c_start = intval($range[0]);
+                $c_end   = (isset($range[1]) && is_numeric($range[1])) ? intval($range[1]) : $size - 1;
+            }
+            $c_end = ($c_end > $end) ? $end : $c_end;
+            if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
+                return response('Requested Range Not Satisfiable', 416, [
+                    'Content-Range' => "bytes */$size"
+                ]);
+            }
+            $start  = $c_start;
+            $end    = $c_end;
+            $length = $end - $start + 1;
+            
+            $headers['Content-Length'] = $length;
+            $headers['Content-Range']  = "bytes $start-$end/$size";
+        }
+
+        return response()->stream(function () use ($stream, $start, $length) {
+            fseek($stream, $start);
+            $buffered = 0;
+            $chunkSize = 1024 * 8; // 8KB chunks
+            while (!feof($stream) && $buffered < $length) {
+                $toRead = min($chunkSize, $length - $buffered);
+                echo fread($stream, $toRead);
+                flush();
+                $buffered += $toRead;
+            }
+            fclose($stream);
+        }, $status, $headers);
+    }
 }
