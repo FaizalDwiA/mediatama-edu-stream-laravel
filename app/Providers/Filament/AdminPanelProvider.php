@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             // ->login()
+            ->favicon(asset('img/logo/logo1.ico'))
             ->colors([
                 'primary' => [
                     50 => '#fff7ed',
@@ -59,10 +60,10 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->font('Plus Jakarta Sans')
-            ->brandLogo(fn () => view('filament.logo'))
+            ->brandLogo(fn() => view('filament.logo'))
             ->renderHook(
                 PanelsRenderHook::FOOTER,
-                fn () => view('filament.footer'),
+                fn() => view('filament.footer'),
             )
             ->defaultThemeMode(ThemeMode::Dark)
             ->assets([
