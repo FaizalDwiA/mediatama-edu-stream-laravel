@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Filament-v3.0-EBB308?style=for-the-badge&logo=laravel" alt="Filament Version">
   <img src="https://img.shields.io/badge/PHP-%3E%3D_8.2-777BB4?style=for-the-badge&logo=php" alt="PHP Version">
   <img src="https://img.shields.io/badge/TailwindCSS-v3.0-06B6D4?style=for-the-badge&logo=tailwindcss" alt="Tailwind Version">
-  <img src="https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite" alt="SQLite">
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
 </p>
 
 ---
@@ -49,7 +49,7 @@ Dengan EduStream, administrator dapat mengelola video, kategori, dan hak akses p
 ## 🛠️ Stack Teknologi
 
 *   **Framework Utama:** Laravel 12
-*   **Database:** SQLite (Default, portable & tidak membutuhkan instalasi server SQL tambahan)
+*   **Database:** MySQL
 *   **Admin Dashboard:** Filament v3
 *   **CSS Styling:** TailwindCSS & Tailwind Nesting
 *   **Frontend Tools:** Vite & Blade Templates
@@ -60,15 +60,14 @@ Dengan EduStream, administrator dapat mengelola video, kategori, dan hak akses p
 ## 📋 Persyaratan Sistem
 
 Sebelum memulai instalasi, pastikan sistem Anda memenuhi persyaratan berikut:
-*   **PHP** `>= 8.2` (dengan ekstensi `pdo_sqlite`, `bcmath`, `ctype`, `fileinfo`, `openssl`, `token`, `xml`)
+*   **PHP** `>= 8.2` (dengan ekstensi `pdo_mysql`, `bcmath`, `ctype`, `fileinfo`, `openssl`, `token`, `xml`)
+*   **MySQL / MariaDB**
 *   **Composer** `^2.0`
 *   **Node.js** `>= 18.0` & **NPM**
 
 ---
 
 ## 🚀 Langkah Instalasi & Konfigurasi
-
-EduStream dilengkapi dengan otomatisasi script pada `composer.json` sehingga proses instalasi dapat diselesaikan dengan sangat mudah.
 
 ### 1. Kloning Repositori
 Kloning repositori ke komputer lokal Anda:
@@ -77,54 +76,61 @@ git clone https://github.com/FaizalDwiA/mediatama-edu-stream-laravel.git edustre
 cd edustream
 ```
 
-### 2. Setup Otomatis (Sangat Direkomendasikan)
-Jalankan perintah berikut untuk menginstal dependensi PHP, membuat file `.env`, membuat database SQLite kosong, generate application key, menjalankan migrasi database, menginstal paket Node, dan membuild aset frontend secara otomatis:
+### 2. Konfigurasi Environment & Database MySQL
+1. Copy file environment dari template `.env.example`:
+   ```bash
+   copy .env.example .env
+   ```
+2. Buat database baru bernama **`edustream`** pada server MySQL Anda (melalui phpMyAdmin, MySQL CLI, atau DBeaver).
+3. Buka file `.env` yang baru dibuat dan sesuaikan konfigurasi database Anda jika berbeda dengan default:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=edustream
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+### 3. Instalasi Dependensi
+Jalankan perintah berikut untuk menginstal dependensi PHP dan Node:
 ```bash
-composer setup
+composer install
+npm install
 ```
 
-*Jika Anda ingin melakukan langkah tersebut secara manual, silakan ikuti petunjuk berikut:*
-<details>
-<summary><b>Klik untuk melihat langkah instalasi manual</b></summary>
+### 4. Generate Application Key
+```bash
+php artisan key:generate
+```
 
-*   **Copy file environment:**
-    ```bash
-    copy .env.example .env
-    ```
-*   **Install PHP dependencies:**
-    ```bash
-    composer install
-    ```
-*   **Generate Application Key:**
-    ```bash
-    php artisan key:generate
-    ```
-*   **Buat File Database SQLite:**
-    *   Buat file kosong di folder `database/database.sqlite` (untuk Windows PowerShell):
-        ```powershell
-        New-Item -Path "database/database.sqlite" -ItemType File
-        ```
-*   **Jalankan Migrasi Database:**
-    ```bash
-    php artisan migrate
-    ```
-*   **Install & Build Frontend Assets:**
-    ```bash
-    npm install
-    npm run build
-    ```
-</details>
+### 5. Jalankan Migrasi Database (php artisan migrate)
+Perintah ini wajib dijalankan untuk membuat seluruh tabel database (users, videos, categories, access_requests, activity_logs) pada database MySQL Anda:
+```bash
+php artisan migrate
+```
 
-### 3. Generate Link Storage (PENTING)
+### 6. Isi Data Demo (Seeding)
+Jalankan seeder untuk mengisi database dengan kategori pelajaran, beberapa contoh video, serta akun uji coba bawaan (Admin dan Customer):
+```bash
+php artisan db:seed
+```
+
+> 💡 **Tips Praktis:** Anda dapat menggabungkan langkah migrasi dan seed di atas dengan satu perintah:
+> ```bash
+> php artisan migrate --seed
+> ```
+
+### 7. Generate Link Storage (PENTING)
 Agar file video dan thumbnail yang diunggah melalui Filament Admin Panel dapat diakses di portal customer, Anda **wajib** membuat link storage ke public folder:
 ```bash
 php artisan storage:link
 ```
 
-### 4. Seed Database (Mengisi Data Demo)
-Jalankan seeder untuk mengisi database dengan kategori pelajaran, beberapa contoh video, serta akun uji coba (Admin dan Customer):
+### 8. Build Frontend Assets
+Compile aset frontend menggunakan Vite:
 ```bash
-php artisan db:seed
+npm run build
 ```
 
 ---
@@ -158,6 +164,8 @@ Perintah `composer dev` di atas akan menjalankan beberapa service secara bersama
 2.  **Vite Server:** Menjalankan `npm run dev` untuk hot reload CSS & JS.
 3.  **Queue Listener:** Menjalankan `php artisan queue:listen` untuk memproses job di latar belakang.
 4.  **Log Tracker:** Menjalankan `php artisan pail` untuk memonitor error log secara langsung di terminal Anda.
+
+*Catatan: Pastikan server database MySQL (seperti XAMPP / Laragon) Anda sudah dalam keadaan aktif sebelum menjalankan aplikasi.*
 
 ---
 
