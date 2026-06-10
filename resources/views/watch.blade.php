@@ -664,7 +664,7 @@
                                 @if ($video->video_path)
                                     <div class="custom-video-player" id="videoPlayer">
                                         <video id="mainVideo" src="{{ route('video.stream', $video->id) }}"
-                                            autoplay></video>
+                                            autoplay preload="auto" playsinline></video>
 
                                         <!-- Play/Pause Overlay Animation -->
                                         <div class="play-pause-overlay" id="playPauseOverlay">
@@ -768,6 +768,8 @@
                                                             <div class="speed-item" data-speed="1.25">1.25x</div>
                                                             <div class="speed-item" data-speed="1.5">1.5x</div>
                                                             <div class="speed-item" data-speed="2">2.0x</div>
+                                                            <div class="speed-item" data-speed="3">3.0x</div>
+                                                            <div class="speed-item" data-speed="4">4.0x</div>
                                                         </div>
                                                     </div>
 
@@ -1383,6 +1385,38 @@
 
             // Initial controls activation
             showControls();
+
+            // Explicit play trigger on load (autoload)
+            const startPlay = () => {
+                const playPromise = mainVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log('Unmuted autoplay blocked by browser. Trying muted autoplay...', error);
+                        // Mute and try playing again
+                        setVolume(0);
+                        mainVideo.play().catch(err => {
+                            console.log('Muted autoplay also blocked:', err);
+                        });
+                    });
+                }
+            };
+
+            if (mainVideo.readyState >= 1) {
+                startPlay();
+            } else {
+                mainVideo.addEventListener('loadedmetadata', startPlay, { once: true });
+            }
+
+            // Fallback: play on first interaction on the page if still paused
+            const playOnInteraction = () => {
+                if (mainVideo.paused) {
+                    mainVideo.play().catch(err => console.log('Interaction play blocked:', err));
+                }
+                document.removeEventListener('click', playOnInteraction);
+                document.removeEventListener('keydown', playOnInteraction);
+            };
+            document.addEventListener('click', playOnInteraction);
+            document.addEventListener('keydown', playOnInteraction);
         });
     </script>
 </x-app-layout>
