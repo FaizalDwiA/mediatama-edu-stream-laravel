@@ -13,13 +13,13 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('Edustream') }}
                     </x-nav-link>
                 </div>
             </div>
 
             <!-- Search Bar (YouTube Style - Light Theme) -->
-            <div class="hidden sm:flex items-center justify-center flex-1 max-w-xs mx-auto">
+            <div class="hidden sm:flex items-center justify-center flex-1 max-w-xs mx-auto" style="max-width: 25rem">
                 <form action="{{ route('dashboard') }}" method="GET" class="w-full">
                     <div
                         class="flex items-center bg-gray-50 border border-gray-300 rounded-full overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all duration-200 w-full relative">
@@ -86,8 +86,37 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
+            <!-- Mobile: Search Bar + Hamburger -->
+            <div class="flex items-center justify-between gap-2 w-full sm:hidden">
+                <!-- Mobile Search Bar (inline in navbar) -->
+                <form action="{{ route('dashboard') }}" method="GET" class="relative w-full max-w-[55%] mx-auto">
+                    <div
+                        class="flex items-center bg-gray-50 border border-gray-300 rounded-full overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all duration-200">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Cari video..." class="text-sm text-gray-900 placeholder-gray-400"
+                            style="border: none !important; background: transparent !important; box-shadow: none !important; outline: none !important; padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; padding-left: 0.75rem !important; padding-right: 0.5rem !important; width: 90% !important;">
+                        @if (request('search'))
+                            <a href="{{ route('dashboard') }}"
+                                class="text-gray-400 hover:text-red-500 p-1 rounded-full flex items-center justify-center"
+                                title="Bersihkan">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </a>
+                        @endif
+                        <button type="submit"
+                            class="bg-gray-100 hover:bg-gray-200 border-l border-gray-300 text-gray-500 hover:text-indigo-600 px-2.5 py-1.5 transition-colors flex items-center justify-center shrink-0"
+                            title="Cari">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Hamburger -->
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -104,41 +133,12 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+        <div class="pt-2 pb-3 space-y-1" style="display: none">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
 
-        <!-- Responsive Search Bar -->
-        <div class="pt-2 pb-3 px-4 border-b border-gray-200">
-            <form action="{{ route('dashboard') }}" method="GET" class="w-full relative">
-                <div
-                    class="flex items-center bg-gray-50 border border-gray-300 rounded-full overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all w-full">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari video..."
-                        class="w-full text-sm text-gray-900 placeholder-gray-400"
-                        style="border: none !important; background: transparent !important; box-shadow: none !important; outline: none !important; padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; padding-left: 1rem !important; padding-right: 3.5rem !important;">
-                    @if (request('search'))
-                        <a href="{{ route('dashboard') }}"
-                            class="absolute right-14 text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-gray-200 transition-all flex items-center justify-center"
-                            title="Bersihkan Pencarian">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </a>
-                    @endif
-                    <button type="submit"
-                        class="bg-gray-100 hover:bg-gray-200 border-l border-gray-300 text-gray-500 hover:text-indigo-600 px-4 py-2.5 transition-colors flex items-center justify-center shrink-0"
-                        title="Cari">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </form>
-        </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
