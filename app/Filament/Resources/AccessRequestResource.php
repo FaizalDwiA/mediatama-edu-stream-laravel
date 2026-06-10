@@ -20,7 +20,7 @@ class AccessRequestResource extends Resource
 {
     protected static ?string $model = AccessRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-key';
 
     public static function form(Form $form): Form
     {
@@ -84,7 +84,7 @@ class AccessRequestResource extends Resource
                     ->label('Beri Akses')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->visible(fn (AccessRequest $record): bool => $record->status !== 'approved')
+                    ->visible(fn(AccessRequest $record): bool => $record->status !== 'approved')
                     ->form([
                         DateTimePicker::make('valid_until')
                             ->label('Batas Waktu Akses')
@@ -107,7 +107,7 @@ class AccessRequestResource extends Resource
                     ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
-                    ->visible(fn (AccessRequest $record): bool => $record->status === 'pending')
+                    ->visible(fn(AccessRequest $record): bool => $record->status === 'pending')
                     ->requiresConfirmation()
                     ->action(function (AccessRequest $record): void {
                         $record->update([
