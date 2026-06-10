@@ -465,11 +465,6 @@
                 background-color: rgba(239, 68, 68, 0.08);
             }
 
-            /* Utility classes */
-            .hidden {
-                display: none !important;
-            }
-
             /* Timer Card & Metadata Card - Unified Glassmorphism Style */
             .timer-card,
             .metadata-card {
@@ -1047,6 +1042,17 @@
              const startHold = (e) => {
                  // Only left click for mouse, or touch events
                  if (e.type === 'mousedown' && e.button !== 0) return;
+
+                 // Check click/touch position relative to the video width
+                 const rect = mainVideo.getBoundingClientRect();
+                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                 const clickX = clientX - rect.left;
+                 const percentage = clickX / rect.width;
+
+                 // Only trigger hold-to-speed-up if click/touch is on the left (< 40%) or right (> 60%)
+                 if (percentage >= 0.4 && percentage <= 0.6) {
+                     return;
+                 }
                  
                  isHolding = false;
                  originalPlaybackRate = mainVideo.playbackRate;
