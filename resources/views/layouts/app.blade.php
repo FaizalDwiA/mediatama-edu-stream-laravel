@@ -33,7 +33,7 @@
         @stack('styles')
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-[#0b0f19]">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
