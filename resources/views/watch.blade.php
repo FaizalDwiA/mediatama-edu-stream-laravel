@@ -633,6 +633,35 @@
                     margin-bottom: 1rem;
                 }
             }
+            /* 2x Speed Indicator Overlay */
+            .speed-indicator-overlay {
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(15, 23, 42, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #ffffff;
+                padding: 6px 14px;
+                border-radius: 30px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                z-index: 15;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease, transform 0.2s ease;
+            }
+
+            .speed-indicator-overlay.active {
+                opacity: 1;
+                transform: translate(-50%, 4px);
+            }
         </style>
     @endpush
 
@@ -665,6 +694,14 @@
                                     <div class="custom-video-player" id="videoPlayer">
                                         <video id="mainVideo" src="{{ route('video.stream', $video->id) }}"
                                             autoplay preload="auto" playsinline></video>
+
+                                        <!-- 2x Speed Banner Overlay -->
+                                        <div class="speed-indicator-overlay" id="speedIndicatorOverlay">
+                                            <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20" style="width: 18px; height: 18px;">
+                                                <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4zM11.555 5.168A1 1 0 0010 6v8a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4z"/>
+                                            </svg>
+                                            <span>2x Kecepatan</span>
+                                        </div>
 
                                         <!-- Play/Pause Overlay Animation -->
                                         <div class="play-pause-overlay" id="playPauseOverlay">
@@ -986,6 +1023,7 @@
             const spinner = document.getElementById('spinner');
             const previewTooltip = document.getElementById('previewTooltip');
             const previewVideo = document.getElementById('previewVideo');
+            const speedIndicatorOverlay = document.getElementById('speedIndicatorOverlay');
 
             let isDragging = false;
 
@@ -998,8 +1036,65 @@
                 }
             }
 
-            playPauseBtn.addEventListener('click', togglePlay);
-            mainVideo.addEventListener('click', togglePlay);
+             playPauseBtn.addEventListener('click', togglePlay);
+             
+             // ================= 2X SPEED ON HOLD LOGIC =================
+             let holdTimeout;
+             let isHolding = false;
+             let originalPlaybackRate = 1;
+             let preventClick = false;
+ 
+             const startHold = (e) => {
+                 // Only left click for mouse, or touch events
+                 if (e.type === 'mousedown' && e.button !== 0) return;
+                 
+                 isHolding = false;
+                 originalPlaybackRate = mainVideo.playbackRate;
+                 
+                 holdTimeout = setTimeout(() => {
+                     isHolding = true;
+                     preventClick = true;
+                     mainVideo.playbackRate = 2.0;
+                     if (speedIndicatorOverlay) {
+                         speedIndicatorOverlay.classList.add('active');
+                     }
+                     // Temporarily update speed button text
+                     speedBtn.textContent = '2.0x';
+                 }, 450); // 450ms long press
+             };
+ 
+             const endHold = () => {
+                 clearTimeout(holdTimeout);
+                 if (isHolding) {
+                     isHolding = false;
+                     mainVideo.playbackRate = originalPlaybackRate;
+                     if (speedIndicatorOverlay) {
+                         speedIndicatorOverlay.classList.remove('active');
+                     }
+                     // Restore speed button text
+                     const currentActiveSpeedItem = document.querySelector('.speed-item.active');
+                     if (currentActiveSpeedItem) {
+                         const speed = parseFloat(currentActiveSpeedItem.dataset.speed);
+                         speedBtn.textContent = speed === 1 ? 'Normal' : `${speed}x`;
+                     }
+                 }
+             };
+ 
+             mainVideo.addEventListener('mousedown', startHold);
+             mainVideo.addEventListener('mouseup', endHold);
+             mainVideo.addEventListener('mouseleave', endHold);
+ 
+             mainVideo.addEventListener('touchstart', startHold, { passive: true });
+             mainVideo.addEventListener('touchend', endHold);
+             mainVideo.addEventListener('touchcancel', endHold);
+ 
+             mainVideo.addEventListener('click', (e) => {
+                 if (preventClick) {
+                     preventClick = false;
+                     return;
+                 }
+                 togglePlay();
+             });
 
             mainVideo.addEventListener('play', () => {
                 playIcon.classList.add('hidden');
