@@ -546,6 +546,7 @@
                 margin-bottom: 2.5rem;
                 display: flex;
                 align-items: center;
+                justify-content: space-between !important;
                 font-weight: 500;
                 font-size: 0.95rem;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -787,22 +788,36 @@
 
             <!-- Toast Success / Error Notifications -->
             @if (session('success'))
-                <div class="session-alert alert-success">
-                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>{{ session('success') }}</span>
+                <div x-data="{ show: true }" x-show="show" x-transition class="session-alert alert-success">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button @click="show = false" class="text-emerald-450 hover:text-emerald-250 transition-colors p-1.5 rounded-full hover:bg-emerald-500/10 flex items-center justify-center cursor-pointer" title="Tutup" style="background: transparent; border: none;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="session-alert alert-error">
-                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>{{ session('error') }}</span>
+                <div x-data="{ show: true }" x-show="show" x-transition class="session-alert alert-error">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                    <button @click="show = false" class="text-rose-450 hover:text-rose-250 transition-colors p-1.5 rounded-full hover:bg-rose-500/10 flex items-center justify-center cursor-pointer" title="Tutup" style="background: transparent; border: none;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
             @endif
 
