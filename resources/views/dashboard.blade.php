@@ -361,6 +361,13 @@
                 border-radius: 8px;
                 letter-spacing: 0.05em;
                 z-index: 5;
+                transition: opacity 0.25s ease, transform 0.25s ease;
+            }
+
+            .video-card:hover .video-tag {
+                opacity: 0;
+                transform: translateY(-5px);
+                pointer-events: none;
             }
 
             /* Video Details Row (Avatar + Meta) */
@@ -600,8 +607,10 @@
                         @else
                             <div class="video-card">
                     @endif
-                    <!-- Video Thumbnail with hover overlay play button -->
                     <div class="video-thumbnail">
+                        @if($video->category)
+                            <span class="video-tag">{{ $video->category->name }}</span>
+                        @endif
                         @if($video->thumbnail)
                             <div class="video-thumbnail-bg"
                                 style="background-image: url('{{ asset('storage/' . $video->thumbnail) }}'); background-size: cover; background-position: center;"></div>

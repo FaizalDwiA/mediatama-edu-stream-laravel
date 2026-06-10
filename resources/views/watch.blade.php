@@ -871,6 +871,18 @@
 
                         <!-- Video Metadata Card -->
                         <div class="metadata-card">
+                            @if($video->category)
+                                <div class="mb-4">
+                                    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-indigo-100 bg-gradient-to-r from-indigo-500/15 to-purple-500/5 border border-indigo-500/30 shadow-lg shadow-indigo-500/5 transition-all duration-300 hover:border-indigo-400/50 hover:shadow-indigo-500/10">
+                                        <span class="relative flex h-2 w-2">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                                        </span>
+                                        <span class="text-indigo-400 font-extrabold">#</span>
+                                        <span>{{ $video->category->name }}</span>
+                                    </span>
+                                </div>
+                            @endif
                             <h1 class="text-xl sm:text-2xl font-extrabold text-white mb-3 leading-tight">{{ $video->title }}
                             </h1>
                             <hr class="border-slate-800/80 mb-4">

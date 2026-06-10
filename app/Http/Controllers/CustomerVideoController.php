@@ -18,7 +18,7 @@ class CustomerVideoController extends Controller
             ->where('valid_until', '<=', Carbon::now()) // Menggunakan nama kolom nyata Anda: valid_until
             ->update(['status' => 'expired']);
 
-        $query = Video::query();
+        $query = Video::with('category');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -65,7 +65,7 @@ class CustomerVideoController extends Controller
     public function watch($id)
     {
         $userId = auth()->id();
-        $video = Video::findOrFail($id);
+        $video = Video::with('category')->findOrFail($id);
 
         // Cek izin akses di database
         $access = AccessRequest::where('user_id', $userId)
