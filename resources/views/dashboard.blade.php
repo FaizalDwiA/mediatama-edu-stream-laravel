@@ -766,6 +766,18 @@
                 font-size: 0.725rem;
                 font-weight: 600;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .pending-badge:hover {
+                background: rgba(245, 158, 11, 0.18) !important;
+                border-color: rgba(245, 158, 11, 0.45) !important;
+                transform: scale(1.04);
+            }
+
+            .pending-badge:active {
+                transform: scale(0.96);
             }
         </style>
     @endpush
@@ -894,12 +906,12 @@
                                         </div>
                                         <span class="overlay-title text-amber-400">Menunggu Persetujuan</span>
                                         <span class="overlay-subtitle">Sedang ditinjau oleh Admin</span>
-                                        <div class="pending-badge">
+                                        <button type="button" class="pending-badge" onclick="alert('Permintaan akses Anda sedang ditinjau oleh Admin. Mohon bersabar atau hubungi Admin untuk informasi lebih lanjut.');">
                                             <svg class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                             </svg>
                                             <span>Diproses</span>
-                                        </div>
+                                        </button>
                                     </div>
                                 @elseif($userRequest->status === 'rejected')
                                     <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin mengirim ulang permintaan akses untuk menonton video ini?');">
