@@ -11,48 +11,6 @@
             transition: all 0.3s ease;
         }
 
-        .dashboard-hero {
-            background: linear-gradient(135deg, #1e1b4b 0%, #311042 60%, #0b0f19 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 3.5rem 3rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 3rem;
-        }
-
-        /* Abstract glowing blobs for hero */
-        .dashboard-hero::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -10%;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(0,0,0,0) 70%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .dashboard-hero::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: 10%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(0,0,0,0) 70%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 650px;
-        }
-
         /* Section Heading */
         .section-heading {
             font-size: 1.5rem;
@@ -370,19 +328,6 @@
                 </div>
             @endif
 
-            <!-- Hero Welcome Banner -->
-            <div class="dashboard-hero">
-                <div class="hero-content">
-                    <span class="text-sm font-semibold tracking-wider text-indigo-400 uppercase">E-Learning Platform</span>
-                    <h1 class="text-3xl sm:text-4xl font-extrabold text-white mt-1 mb-3 leading-tight">
-                        Selamat Datang, {{ auth()->user()->name }}! 👋
-                    </h1>
-                    <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
-                        Temukan berbagai video pembelajaran interaktif terbaik untuk melatih dan mengasah keahlian baru Anda sekarang.
-                    </p>
-                </div>
-            </div>
-
             <!-- Grid Header Title -->
             <h2 class="section-heading text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -468,11 +413,19 @@
                     </div>
                 @empty
                     <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center text-slate-400 py-16 bg-slate-900 bg-opacity-40 border border-dashed border-slate-700 border-opacity-65 rounded-2xl">
-                        <svg class="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
-                        </svg>
-                        <p class="text-base font-semibold">Belum ada video yang tersedia</p>
-                        <p class="text-xs text-slate-500 mt-1">Silakan hubungi Admin untuk menambahkan video ke dalam katalog.</p>
+                        @if(request('search'))
+                            <svg class="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <p class="text-base font-semibold">Tidak ada video yang cocok dengan pencarian "{{ request('search') }}"</p>
+                            <p class="text-xs text-slate-500 mt-1">Coba kata kunci lain atau <a href="{{ route('dashboard') }}" class="text-indigo-400 hover:text-indigo-300 underline font-medium transition-colors">bersihkan pencarian</a>.</p>
+                        @else
+                            <svg class="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
+                            </svg>
+                            <p class="text-base font-semibold">Belum ada video yang tersedia</p>
+                            <p class="text-xs text-slate-500 mt-1">Silakan hubungi Admin untuk menambahkan video ke dalam katalog.</p>
+                        @endif
                     </div>
                 @endforelse
             </div>

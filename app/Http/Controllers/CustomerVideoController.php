@@ -9,10 +9,20 @@ use Carbon\Carbon;
 
 class CustomerVideoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = auth()->id();
-        $videos = Video::all();
+        $query = Video::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        $videos = $query->get();
 
         // Ambil semua data request milik user ini untuk dicocokkan di blade
         $requests = AccessRequest::where('user_id', $userId)
