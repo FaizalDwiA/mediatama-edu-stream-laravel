@@ -64,6 +64,7 @@ class AccessRequestResource extends Resource
                         'pending' => 'warning',
                         'approved' => 'success',
                         'rejected' => 'danger',
+                        'expired' => 'gray',
                     }),
                 TextColumn::make('valid_until')
                     ->label('Batas Waktu Akses')

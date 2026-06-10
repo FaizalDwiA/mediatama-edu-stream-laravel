@@ -12,13 +12,19 @@ class CustomerVideoController extends Controller
     public function index(Request $request)
     {
         $userId = auth()->id();
+        // 🌟 KUNCI OTOMATISASI: Setiap user buka dashboard, langsung cek & ubah yang kedaluwarsa secara real-time
+        AccessRequest::where('user_id', $userId)
+            ->where('status', 'approved')
+            ->where('valid_until', '<=', Carbon::now()) // Menggunakan nama kolom nyata Anda: valid_until
+            ->update(['status' => 'expired']);
+
         $query = Video::query();
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%');
+                    ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
 
@@ -69,6 +75,11 @@ class CustomerVideoController extends Controller
 
         // Validasi Logika Waktu menggunakan Carbon (Inti Batas Waktu Soal)
         if (!$access || !$access->valid_until || Carbon::now()->gt($access->valid_until)) {
+            // Jika datanya ada tapi waktunya lewat, ubah statusnya di database menjadi expired
+            if ($access) {
+                $access->update(['status' => 'expired']);
+            }
+
             return redirect()->route('dashboard')->with('error', 'Akses ditolak! Waktu menonton Anda belum dimulai atau sudah habis.');
         }
 
