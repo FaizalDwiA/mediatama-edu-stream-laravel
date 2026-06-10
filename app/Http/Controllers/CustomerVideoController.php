@@ -24,7 +24,10 @@ class CustomerVideoController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhereHas('category', function ($catQuery) use ($search) {
+                        $catQuery->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 

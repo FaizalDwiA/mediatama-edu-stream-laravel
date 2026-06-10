@@ -1,3 +1,163 @@
+<style>
+    /* YouTube Style Search Bar Container */
+    .yt-search-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .yt-search-box {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        background-color: #0f0f0f !important;
+        border: 1px solid #303030 !important;
+        border-right: none !important;
+        border-radius: 40px 0 0 40px !important;
+        padding: 0 4px 0 16px !important;
+        height: 40px;
+        position: relative;
+        transition: border-color 0.15s ease;
+    }
+
+    .yt-search-box:focus-within {
+        border-color: #1c62b9 !important;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .yt-search-input {
+        width: 100%;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        color: #f1f5f9 !important;
+        font-size: 0.95rem !important;
+        padding: 0 !important;
+        margin-right: 32px !important; /* Space for clear button */
+    }
+
+    .yt-search-input::placeholder {
+        color: #888888 !important;
+    }
+
+    .yt-search-input:focus {
+        ring: 0 !important;
+        outline: none !important;
+    }
+
+    /* Search icon inside input box (revealed on focus) */
+    .yt-input-search-icon {
+        display: none;
+        color: #a0a0a0;
+        margin-right: 10px;
+        flex-shrink: 0;
+    }
+
+    .yt-search-box:focus-within .yt-input-search-icon {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Clear query button (X) */
+    .yt-clear-btn {
+        position: absolute;
+        right: 12px;
+        color: #aaaaaa;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .yt-clear-btn:hover {
+        background-color: #272727;
+        color: #ffffff;
+    }
+
+    /* YouTube Search Button */
+    .yt-search-btn {
+        background-color: #222222 !important;
+        border: 1px solid #303030 !important;
+        border-radius: 0 40px 40px 0 !important;
+        width: 64px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f1f5f9 !important;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    .yt-search-btn:hover {
+        background-color: #272727 !important;
+    }
+
+    /* YouTube Microphone Button */
+    .yt-mic-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50% !important;
+        background-color: #181818 !important;
+        border: none !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff !important;
+        cursor: pointer;
+        margin-left: 8px;
+        transition: background-color 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    .yt-mic-btn:hover {
+        background-color: #272727 !important;
+    }
+
+    /* Mobile Search Bar styles */
+    .yt-mobile-search-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .yt-mobile-search-box {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        background-color: #0f0f0f !important;
+        border: 1px solid #303030 !important;
+        border-radius: 40px !important;
+        padding: 0 8px 0 12px !important;
+        height: 36px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .yt-mobile-search-box:focus-within {
+        border-color: #1c62b9 !important;
+    }
+
+    .yt-mobile-search-input {
+        width: 100%;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        color: #f1f5f9 !important;
+        font-size: 0.875rem !important;
+        padding: 0 !important;
+    }
+</style>
+
 <nav x-data="{ open: false }" class="sticky top-0 z-50 shadow-lg transition-all duration-300" style="background-color: #0b0f19 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,30 +174,29 @@
                 </div>
             </div>
 
-            <!-- Search Bar (YouTube Style - Solid Dark Theme) -->
-            <div class="hidden sm:flex items-center justify-center flex-1 max-w-lg mx-auto px-4">
-                <form action="{{ route('dashboard') }}" method="GET" class="w-full">
-                    <div class="flex items-center rounded-full overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all duration-200 w-full relative" style="background-color: #12121a !important; border: 1px solid rgba(255, 255, 255, 0.1) !important;">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Telusuri"
-                            class="w-full text-sm placeholder-slate-500 bg-transparent border-0 focus:ring-0 focus:outline-none"
-                            style="border: none !important; background: transparent !important; box-shadow: none !important; outline: none !important; padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; padding-left: 1rem !important; padding-right: 3.5rem !important; color: #f1f5f9 !important;">
-                        @if (request('search'))
-                            <a href="{{ route('dashboard') }}"
-                                class="absolute right-16 text-slate-400 hover:text-red-500 p-1 rounded-full hover:bg-slate-800 transition-all flex items-center justify-center"
-                                title="Bersihkan Pencarian" style="top: 50%; transform: translateY(-50%);">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
+            <!-- Search Bar (YouTube Style) -->
+            <div class="hidden sm:flex items-center justify-center flex-1 max-w-xl mx-auto px-4">
+                <form action="{{ route('dashboard') }}" method="GET" class="w-full flex items-center justify-center">
+                    <div class="yt-search-container">
+                        <div class="yt-search-box">
+                            <!-- Input Search Icon (Hidden until focused) -->
+                            <span class="yt-input-search-icon">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
-                            </a>
-                        @endif
-                        <button type="submit"
-                            class="border-slate-800 text-slate-300 hover:text-indigo-400 px-6 py-2 transition-colors flex items-center justify-center shrink-0"
-                            style="background-color: #222222 !important; border-left: 1px solid rgba(255, 255, 255, 0.1) !important;"
-                            title="Cari">
-                            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </span>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Telusuri" class="yt-search-input">
+                            @if (request('search'))
+                                <a href="{{ route('dashboard') }}" class="yt-clear-btn" title="Bersihkan Pencarian">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </a>
+                            @endif
+                        </div>
+                        <button type="submit" class="yt-search-btn" title="Cari">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 19px; height: 19px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </button>
                     </div>
@@ -76,33 +235,26 @@
                 </x-dropdown>
             </div>
 
-            <!-- Mobile: Search Bar + Hamburger (Solid Dark Theme) -->
+            <!-- Mobile: Search Bar + Hamburger (YouTube style) -->
             <div class="flex items-center justify-between gap-3 w-full sm:hidden">
-                <!-- Mobile Search Bar (inline in navbar) -->
-                <form action="{{ route('dashboard') }}" method="GET" class="relative w-full max-w-[70%] mx-auto">
-                    <div class="flex items-center rounded-full overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all duration-200" style="background-color: #12121a !important; border: 1px solid rgba(255, 255, 255, 0.1) !important;">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Telusuri" class="text-sm placeholder-slate-500 bg-transparent border-0 focus:ring-0 focus:outline-none"
-                            style="border: none !important; background: transparent !important; box-shadow: none !important; outline: none !important; padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; padding-left: 0.75rem !important; padding-right: 0.5rem !important; width: 90% !important; color: #f1f5f9 !important;">
-                        @if (request('search'))
-                            <a href="{{ route('dashboard') }}"
-                                class="text-slate-400 hover:text-red-500 p-1 rounded-full flex items-center justify-center"
-                                title="Bersihkan">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
+                <!-- Mobile Search Bar -->
+                <form action="{{ route('dashboard') }}" method="GET" class="w-full flex items-center justify-center max-w-[75%] mx-auto">
+                    <div class="yt-mobile-search-container">
+                        <div class="yt-mobile-search-box">
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Telusuri" class="yt-mobile-search-input">
+                            @if (request('search'))
+                                <a href="{{ route('dashboard') }}" class="yt-clear-btn" style="position: relative; right: auto; padding: 4px;" title="Bersihkan">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </a>
+                            @endif
+                            <button type="submit" class="text-slate-400 hover:text-white ml-2 flex items-center justify-center" title="Cari">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
-                            </a>
-                        @endif
-                        <button type="submit"
-                            class="text-slate-400 hover:text-indigo-400 px-2.5 py-1.5 transition-colors flex items-center justify-center shrink-0"
-                            style="background-color: #222222 !important; border-left: 1px solid rgba(255, 255, 255, 0.1) !important;"
-                            title="Cari">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
+                            </button>
+                        </div>
                     </div>
                 </form>
 

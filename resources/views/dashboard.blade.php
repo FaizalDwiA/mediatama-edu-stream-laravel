@@ -360,11 +360,12 @@
                 padding: 4px 10px;
                 border-radius: 8px;
                 letter-spacing: 0.05em;
-                z-index: 5;
+                z-index: 20; /* Higher than locked-overlay (10) */
                 transition: opacity 0.25s ease, transform 0.25s ease;
             }
 
-            .video-card:hover .video-tag {
+            /* Only hide video tag on hover for approved (playable) videos */
+            a.video-card:hover .video-tag {
                 opacity: 0;
                 transform: translateY(-5px);
                 pointer-events: none;
@@ -561,6 +562,211 @@
                 border: 1px solid rgba(244, 63, 94, 0.25);
                 color: #f43f5e;
             }
+
+            /* Premium Lock/Access Overlays */
+            .locked-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.55) !important; /* Semi-transparent slate-900 */
+                backdrop-filter: blur(8px) !important;
+                -webkit-backdrop-filter: blur(8px) !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .video-card:hover .locked-overlay {
+                background: rgba(15, 23, 42, 0.7) !important;
+                backdrop-filter: blur(12px) !important;
+                -webkit-backdrop-filter: blur(12px) !important;
+            }
+
+            /* Lock Container & Icon Styling */
+            .lock-icon-container {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 0.65rem;
+                position: relative;
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            /* Different states icon styling */
+            .state-request {
+                background: rgba(99, 102, 241, 0.12);
+                border: 1px solid rgba(99, 102, 241, 0.3);
+                color: #818cf8;
+                box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+            }
+
+            .video-card:hover .state-request {
+                background: rgba(99, 102, 241, 0.22);
+                border-color: rgba(99, 102, 241, 0.6);
+                color: #a5b4fc;
+                box-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
+                transform: translateY(-2px);
+            }
+
+            .state-pending {
+                background: rgba(245, 158, 11, 0.12);
+                border: 1px solid rgba(245, 158, 11, 0.3);
+                color: #fbbf24;
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+                animation: pulse-glow-amber 2s infinite ease-in-out;
+            }
+
+            .video-card:hover .state-pending {
+                background: rgba(245, 158, 11, 0.22);
+                border-color: rgba(245, 158, 11, 0.6);
+                color: #fcd34d;
+                box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+                transform: translateY(-2px);
+            }
+
+            .state-rejected {
+                background: rgba(239, 68, 68, 0.12);
+                border: 1px solid rgba(239, 68, 68, 0.3);
+                color: #f87171;
+                box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+            }
+
+            .video-card:hover .state-rejected {
+                background: rgba(239, 68, 68, 0.22);
+                border-color: rgba(239, 68, 68, 0.6);
+                color: #fca5a5;
+                box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
+                transform: translateY(-2px);
+            }
+
+            .state-expired {
+                background: rgba(244, 63, 94, 0.12);
+                border: 1px solid rgba(244, 63, 94, 0.3);
+                color: #fb7185;
+                box-shadow: 0 0 15px rgba(244, 63, 94, 0.1);
+            }
+
+            .video-card:hover .state-expired {
+                background: rgba(244, 63, 94, 0.22);
+                border-color: rgba(244, 63, 94, 0.6);
+                color: #fecdd3;
+                box-shadow: 0 0 25px rgba(244, 63, 94, 0.35);
+                transform: translateY(-2px);
+            }
+
+            @keyframes pulse-glow-amber {
+                0%, 100% {
+                    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+                    border-color: rgba(245, 158, 11, 0.3);
+                }
+                50% {
+                    box-shadow: 0 0 22px rgba(245, 158, 11, 0.4);
+                    border-color: rgba(245, 158, 11, 0.6);
+                }
+            }
+
+            /* Text labels inside overlay */
+            .overlay-title {
+                font-size: 0.95rem;
+                font-weight: 700;
+                letter-spacing: -0.01em;
+                margin-bottom: 0.15rem;
+                transition: color 0.3s ease;
+            }
+            
+            .overlay-subtitle {
+                font-size: 0.725rem;
+                color: #94a3b8;
+                margin-bottom: 0.75rem;
+                font-weight: 400;
+            }
+
+            /* Styled action buttons inside overlay */
+            .overlay-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.45rem 1.125rem;
+                border-radius: 9999px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            .btn-request {
+                background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+                color: #ffffff;
+                box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+            }
+
+            .btn-request:hover {
+                transform: translateY(-1.5px) scale(1.04);
+                box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45);
+                background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+            }
+
+            .btn-request:active {
+                transform: translateY(0) scale(0.96);
+            }
+
+            .btn-rejected {
+                background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+                color: #ffffff;
+                box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+            }
+
+            .btn-rejected:hover {
+                transform: translateY(-1.5px) scale(1.04);
+                box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
+                background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+            }
+
+            .btn-rejected:active {
+                transform: translateY(0) scale(0.96);
+            }
+
+            .btn-expired {
+                background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
+                color: #ffffff;
+                box-shadow: 0 4px 14px rgba(225, 29, 72, 0.3);
+            }
+
+            .btn-expired:hover {
+                transform: translateY(-1.5px) scale(1.04);
+                box-shadow: 0 6px 18px rgba(225, 29, 72, 0.45);
+                background: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+            }
+
+            .btn-expired:active {
+                transform: translateY(0) scale(0.96);
+            }
+
+            /* Pending badge styled glassmorphism indicator */
+            .pending-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.4rem 0.95rem;
+                background: rgba(30, 41, 59, 0.75);
+                border: 1px solid rgba(245, 158, 11, 0.25);
+                border-radius: 9999px;
+                color: #fbbf24;
+                font-size: 0.725rem;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
         </style>
     @endpush
 
@@ -655,13 +861,77 @@
                                 <div class="video-progress-scrubber"></div>
                             </div>
                         @endif
-                        <div class="play-overlay">
-                            <div class="play-btn-circle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
+                        @if ($isApproved)
+                            <div class="play-overlay">
+                                <div class="play-btn-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="locked-overlay">
+                                @if (!$userRequest)
+                                    <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin meminta akses untuk menonton video ini?');">
+                                        @csrf
+                                        <div class="lock-icon-container state-request">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                        </div>
+                                        <span class="overlay-title text-slate-100">Akses Terkunci</span>
+                                        <span class="overlay-subtitle">Minta akses untuk menonton</span>
+                                        <button type="submit" class="overlay-btn btn-request">
+                                            <span>Minta Akses</span>
+                                        </button>
+                                    </form>
+                                @elseif($userRequest->status === 'pending')
+                                    <div class="w-full h-full flex flex-col items-center justify-center p-2">
+                                        <div class="lock-icon-container state-pending">
+                                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <span class="overlay-title text-amber-400">Menunggu Persetujuan</span>
+                                        <span class="overlay-subtitle">Sedang ditinjau oleh Admin</span>
+                                        <div class="pending-badge">
+                                            <svg class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                            </svg>
+                                            <span>Diproses</span>
+                                        </div>
+                                    </div>
+                                @elseif($userRequest->status === 'rejected')
+                                    <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin mengirim ulang permintaan akses untuk menonton video ini?');">
+                                        @csrf
+                                        <div class="lock-icon-container state-rejected">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            </svg>
+                                        </div>
+                                        <span class="overlay-title text-orange-500">Permintaan Ditolak</span>
+                                        <span class="overlay-subtitle">Kirim ulang permintaan akses</span>
+                                        <button type="submit" class="overlay-btn btn-rejected">
+                                            <span>Minta Ulang</span>
+                                        </button>
+                                    </form>
+                                @elseif($isExpired)
+                                    <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin meminta ulang akses untuk menonton video ini?');">
+                                        @csrf
+                                        <div class="lock-icon-container state-expired">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <span class="overlay-title text-rose-500">Akses Kedaluwarsa</span>
+                                        <span class="overlay-subtitle">Batas waktu akses habis</span>
+                                        <button type="submit" class="overlay-btn btn-expired">
+                                            <span>Minta Ulang</span>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Video Content Details (YouTube style: Avatar + Info) -->
@@ -680,29 +950,11 @@
                             </p>
 
                             <!-- Video Actions (Pill Buttons) -->
-                            <div class="video-actions-wrapper">
-                                @if (!$userRequest)
-                                    <form action="{{ route('video.request', $video->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="yt-pill-btn yt-pill-blue">
-                                            Minta Akses
-                                        </button>
-                                    </form>
-                                @elseif($userRequest->status === 'pending')
-                                    <button disabled class="yt-pill-btn yt-pill-pending cursor-not-allowed">
-                                        Menunggu Persetujuan Admin
-                                    </button>
-                                @elseif($userRequest->status === 'rejected')
-                                    <form action="{{ route('video.request', $video->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="yt-pill-btn yt-pill-orange">
-                                            Akses Ditolak - Minta Ulang
-                                        </button>
-                                    </form>
-                                @elseif($userRequest->status === 'approved' && !$isExpired)
+                            <div class="video-actions-wrapper" style="margin-top: 0.25rem !important;">
+                                @if($userRequest && $userRequest->status === 'approved' && !$isExpired)
                                     <div class="access-status-approved">
                                         <svg class="w-3.5 h-3.5 text-green-400 mr-1" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -711,20 +963,13 @@
                                 @elseif($isExpired)
                                     <div class="access-status-expired">
                                         <svg class="w-3.5 h-3.5 text-red-400 mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
+                                            viewBox="0 0 24 24" style="width: 14px; height: 14px;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
                                             </path>
                                         </svg>
                                         Waktu Akses Habis!
                                     </div>
-                                    <form action="{{ route('video.request', $video->id) }}" method="POST"
-                                        class="mt-1">
-                                        @csrf
-                                        <button type="submit" class="yt-pill-btn yt-pill-red">
-                                            Minta Akses Ulang
-                                        </button>
-                                    </form>
                                 @endif
                             </div>
                         </div>
