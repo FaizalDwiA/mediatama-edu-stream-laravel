@@ -40,5 +40,11 @@ class DatabaseSeeder extends Seeder
             'role' => 'customer',
             'email_verified_at' => now()
         ]);
+
+        // Memanggil seeder secara berurutan (Kategori wajib dibuat duluan)
+        $this->call([
+            CategorySeeder::class,
+            VideoSeeder::class,
+        ]);
     }
 }
