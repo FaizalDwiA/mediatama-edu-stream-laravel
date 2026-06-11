@@ -31,33 +31,32 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox"
-                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+        <!-- Remember Me & Forgot Password Row -->
+        <div class="flex items-center justify-between mt-4">
+            <label for="remember_me" class="inline-flex items-center auth-checkbox-label">
+                <input id="remember_me" type="checkbox" name="remember">
+                <span class="ms-2 text-sm auth-checkbox-text">{{ __('Ingat Saya') }}</span>
             </label>
-        </div>
 
-        <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                <a class="auth-link underline text-sm" href="{{ route('password.request') }}">
+                    {{ __('Lupa password?') }}
                 </a>
             @endif
+        </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <!-- Submit Button -->
+        <div class="mt-6">
+            <button type="submit" class="w-full auth-btn flex items-center justify-center" style="width: 100% !important; text-align: center;">
+                {{ __('Masuk Sekarang') }}
+            </button>
         </div>
     </form>
 
     <div class="auth-footer-text">
-        {{ __("Don't have an account?") }}
+        {{ __("Belum punya akun?") }}
         <a href="{{ route('register') }}">
-            {{ __('Register') }}
+            {{ __('Daftar') }}
         </a>
     </div>
 </x-guest-layout>
