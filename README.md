@@ -47,6 +47,7 @@ Dengan EduStream, administrator dapat mengelola video, kategori, dan hak akses p
 *   **User Management:** Pengelolaan data pengguna dan penetapan peran (Admin / Customer).
 *   **Category Management:** Pengelompokan video berdasarkan topik/mata pelajaran.
 *   **Video Manager:** Fitur upload video baru, pengaturan deskripsi, dan upload thumbnail gambar.
+*   **Auto File Cleanup (Storage Management):** Saat admin mengganti thumbnail atau file video pada halaman edit, file lama di storage akan otomatis dihapus **setelah data berhasil disimpan**. Begitu pula saat record video dihapus, seluruh file terkait (thumbnail & video) ikut terhapus secara otomatis — mencegah penumpukan file sampah di server.
 *   **Request Approval Panel:** Persetujuan permohonan akses video lengkap dengan pengaturan durasi kedaluwarsa akses (`valid_until`).
 *   **Activity Logs:** Audit trail otomatis yang mencatat riwayat aktivitas login, request, dan penayangan video.
 
@@ -190,3 +191,5 @@ Perintah `composer dev` di atas akan menjalankan beberapa service secara bersama
 
 *   **Penyimpanan Video:** Semua file video diunggah ke storage lokal di folder `storage/app/public/`. Streaming engine membaca file dari direktori tersebut sehingga video dilindungi dan tidak dapat diputar langsung tanpa autentikasi/akses aktif.
 *   **Pengaturan Waktu:** Waktu kedaluwarsa video dihitung menggunakan pustaka Carbon dengan membandingkan waktu saat ini dengan kolom `valid_until` pada tabel `access_requests`. Ketika user membuka dashboard, status request yang melewati masa berlaku akan diperbarui menjadi `expired`.
+*   **Auto File Cleanup:** Ketika admin mengganti thumbnail atau file video melalui halaman edit, file lama di server **hanya dihapus setelah data berhasil tersimpan** ke database. Jika admin membatalkan sebelum menyimpan, file lama tetap aman. Ketika record video dihapus, file thumbnail dan video di storage ikut terhapus secara otomatis untuk menjaga kebersihan server.
+
