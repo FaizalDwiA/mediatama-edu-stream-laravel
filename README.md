@@ -140,7 +140,7 @@ npm run build
 Setelah proses seeding selesai, Anda dapat langsung masuk menggunakan akun default berikut untuk mencoba fungsionalitas sistem:
 
 ### 🛡️ Akun Administrator (Akses Dashboard Admin)
-*   **Halaman Login:** [http://127.0.0.1:174/admin/login](http://127.0.0.1:174/admin/login)
+*   **Halaman Login:** [http://127.0.0.1:174/login](http://127.0.0.1:174/login)
 *   **Email:** `admin@edustream.com`
 *   **Password:** `password`
 
