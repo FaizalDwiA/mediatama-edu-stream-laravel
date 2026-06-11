@@ -167,7 +167,7 @@
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
                         <x-application-logo class="block h-8 w-auto transition-transform group-hover:scale-105" />
-                        <span class="text-white font-extrabold text-lg tracking-wider transition-colors" style="background: linear-gradient(to right, #ffffff, #e2e8f0, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        <span class="text-white font-extrabold text-lg tracking-wider transition-colors hidden min-[480px]:inline" style="background: linear-gradient(to right, #ffffff, #e2e8f0, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                             Edustream
                         </span>
                     </a>
@@ -240,9 +240,9 @@
             </div>
 
             <!-- Mobile: Search Bar + Hamburger (YouTube style) -->
-            <div class="flex items-center justify-between gap-3 w-full sm:hidden">
+            <div class="flex items-center justify-end gap-3 flex-1 ml-4 sm:hidden">
                 <!-- Mobile Search Bar -->
-                <form action="{{ route('dashboard') }}" method="GET" class="w-full flex items-center justify-center max-w-[75%] mx-auto">
+                <form action="{{ route('dashboard') }}" method="GET" class="w-full max-w-[180px] min-[400px]:max-w-[240px] flex items-center justify-center">
                     <div class="yt-mobile-search-container">
                         <div class="yt-mobile-search-box">
                             <input type="text" name="search" value="{{ request('search') }}" placeholder="Telusuri" class="yt-mobile-search-input">
