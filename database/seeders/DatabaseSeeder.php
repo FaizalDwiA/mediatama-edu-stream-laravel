@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         // 2. Membuat Akun Demo Customer Default
         User::create([
             'name' => 'Faizal Dwi Al Farizi',
-            'email' => 'faizal@edustream.com',
+            'email' => 'faizaldwialfarizi@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'customer',
             'email_verified_at' => now()
