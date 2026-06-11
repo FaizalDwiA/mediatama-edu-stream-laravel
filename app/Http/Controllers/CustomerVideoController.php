@@ -69,6 +69,13 @@ class CustomerVideoController extends Controller
     {
         $userId = auth()->id();
         $video = Video::with('category')->findOrFail($id);
+        $user = auth()->user();
+
+        // Jika user adalah admin, bypass pengecekan akses
+        if ($user && $user->role === 'admin') {
+            $access = null;
+            return view('watch', compact('video', 'access'));
+        }
 
         // Cek izin akses di database
         $access = AccessRequest::where('user_id', $userId)
@@ -93,19 +100,23 @@ class CustomerVideoController extends Controller
     {
         $userId = auth()->id();
         $video = Video::findOrFail($id);
+        $user = auth()->user();
 
-        // Cek izin akses di database
-        $access = AccessRequest::where('user_id', $userId)
-            ->where('video_id', $id)
-            ->where('status', 'approved')
-            ->first();
+        // Jika user adalah admin, bypass pengecekan akses
+        if (!$user || $user->role !== 'admin') {
+            // Cek izin akses di database
+            $access = AccessRequest::where('user_id', $userId)
+                ->where('video_id', $id)
+                ->where('status', 'approved')
+                ->first();
 
-        // Validasi akses aktif
-        if (!$access || !$access->valid_until || Carbon::now()->gt($access->valid_until)) {
-            if ($access) {
-                $access->update(['status' => 'expired']);
+            // Validasi akses aktif
+            if (!$access || !$access->valid_until || Carbon::now()->gt($access->valid_until)) {
+                if ($access) {
+                    $access->update(['status' => 'expired']);
+                }
+                abort(403, 'Akses ditolak!');
             }
-            abort(403, 'Akses ditolak!');
         }
 
         $path = storage_path('app/public/' . $video->video_path);

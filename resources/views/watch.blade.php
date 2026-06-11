@@ -844,29 +844,56 @@
 
                         <!-- Watch Timer / Countdown Card -->
                         <div class="timer-card">
-                            <div class="timer-header flex items-center gap-2 mb-3">
-                                <div class="timer-icon-wrapper">
-                                    <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
+                            @if(auth()->user() && auth()->user()->role === 'admin')
+                                <div class="timer-header flex items-center gap-2 mb-3">
+                                    <div class="timer-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+                                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs uppercase tracking-wider text-slate-300 font-bold">Status Akses</span>
                                 </div>
-                                <span class="text-xs uppercase tracking-wider text-slate-300 font-bold">Sisa Waktu
-                                    Menonton</span>
-                            </div>
-                            <div class="timer-body">
-                                <div id="countdown" class="countdown-container">Menghitung...</div>
-                                <div class="expiry-badge">
-                                    <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    <span>Batas Akses: {{ $access->valid_until->format('d M Y H:i') }}</span>
+                                <div class="timer-body">
+                                    <div class="countdown-container text-center py-4">
+                                        <span class="text-lg font-bold text-emerald-400">Akses Penuh (Admin)</span>
+                                    </div>
+                                    <div class="expiry-badge" style="background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.15); color: #34d399;">
+                                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        <span>Tidak Ada Batas Waktu</span>
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="timer-header flex items-center gap-2 mb-3">
+                                    <div class="timer-icon-wrapper">
+                                        <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs uppercase tracking-wider text-slate-300 font-bold">Sisa Waktu
+                                        Menonton</span>
+                                </div>
+                                <div class="timer-body">
+                                    <div id="countdown" class="countdown-container">Menghitung...</div>
+                                    <div class="expiry-badge">
+                                        <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        <span>Batas Akses: {{ $access->valid_until->format('d M Y H:i') }}</span>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Video Metadata Card -->
@@ -914,89 +941,93 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // ================= COUNTDOWN TIMER LOGIC =================
-            const expiryTime = new Date("{{ $access->valid_until->toIso8601String() }}").getTime();
-            const countdownEl = document.getElementById("countdown");
+            @if(auth()->user() && auth()->user()->role === 'admin')
+                // Akses Penuh Admin: Tidak perlu logika countdown timer
+            @else
+                const expiryTime = new Date("{{ $access->valid_until->toIso8601String() }}").getTime();
+                const countdownEl = document.getElementById("countdown");
 
-            function updateTimer() {
-                const now = new Date();
-                const expiry = new Date(expiryTime);
-                const distance = expiry.getTime() - now.getTime();
+                function updateTimer() {
+                    const now = new Date();
+                    const expiry = new Date(expiryTime);
+                    const distance = expiry.getTime() - now.getTime();
 
-                if (distance <= 0) {
-                    clearInterval(timerInterval);
-                    countdownEl.innerHTML = "WAKTU AKSES HABIS";
-                    alert("Waktu menonton Anda telah habis!");
-                    window.location.href = "{{ route('dashboard') }}";
-                    return;
+                    if (distance <= 0) {
+                        clearInterval(timerInterval);
+                        countdownEl.innerHTML = "WAKTU AKSES HABIS";
+                        alert("Waktu menonton Anda telah habis!");
+                        window.location.href = "{{ route('dashboard') }}";
+                        return;
+                    }
+
+                    // Hitung selisih kalender (tahun, bulan, hari, jam, menit, detik)
+                    let years = expiry.getFullYear() - now.getFullYear();
+                    let months = expiry.getMonth() - now.getMonth();
+                    let days = expiry.getDate() - now.getDate();
+                    let hours = expiry.getHours() - now.getHours();
+                    let minutes = expiry.getMinutes() - now.getMinutes();
+                    let seconds = expiry.getSeconds() - now.getSeconds();
+
+                    if (seconds < 0) {
+                        minutes--;
+                        seconds += 60;
+                    }
+                    if (minutes < 0) {
+                        hours--;
+                        minutes += 60;
+                    }
+                    if (hours < 0) {
+                        days--;
+                        hours += 24;
+                    }
+                    if (days < 0) {
+                        months--;
+                        // Dapatkan jumlah hari dari bulan sebelumnya
+                        const prevMonth = new Date(expiry.getFullYear(), expiry.getMonth(), 0);
+                        days += prevMonth.getDate();
+                    }
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+
+                    let html = `
+                        <div class="countdown-row">
+                            <div class="countdown-segment">
+                                <span class="countdown-number">${String(years).padStart(2, '0')}</span>
+                                <span class="countdown-label">Thn</span>
+                            </div>
+                            <div class="countdown-segment">
+                                <span class="countdown-number">${String(months).padStart(2, '0')}</span>
+                                <span class="countdown-label">Bln</span>
+                            </div>
+                            <div class="countdown-segment">
+                                <span class="countdown-number">${String(days).padStart(2, '0')}</span>
+                                <span class="countdown-label">Hari</span>
+                            </div>
+                        </div>
+                        <div class="countdown-row">
+                            <div class="countdown-segment">
+                                <span class="countdown-number">${String(hours).padStart(2, '0')}</span>
+                                <span class="countdown-label">Jam</span>
+                            </div>
+                            <div class="countdown-segment">
+                                <span class="countdown-number">${String(minutes).padStart(2, '0')}</span>
+                                <span class="countdown-label">Mnt</span>
+                            </div>
+                            <div class="countdown-segment">
+                                <span class="countdown-number">${String(seconds).padStart(2, '0')}</span>
+                                <span class="countdown-label">Detik</span>
+                            </div>
+                        </div>
+                    `;
+
+                    countdownEl.innerHTML = html;
                 }
 
-                // Hitung selisih kalender (tahun, bulan, hari, jam, menit, detik)
-                let years = expiry.getFullYear() - now.getFullYear();
-                let months = expiry.getMonth() - now.getMonth();
-                let days = expiry.getDate() - now.getDate();
-                let hours = expiry.getHours() - now.getHours();
-                let minutes = expiry.getMinutes() - now.getMinutes();
-                let seconds = expiry.getSeconds() - now.getSeconds();
-
-                if (seconds < 0) {
-                    minutes--;
-                    seconds += 60;
-                }
-                if (minutes < 0) {
-                    hours--;
-                    minutes += 60;
-                }
-                if (hours < 0) {
-                    days--;
-                    hours += 24;
-                }
-                if (days < 0) {
-                    months--;
-                    // Dapatkan jumlah hari dari bulan sebelumnya
-                    const prevMonth = new Date(expiry.getFullYear(), expiry.getMonth(), 0);
-                    days += prevMonth.getDate();
-                }
-                if (months < 0) {
-                    years--;
-                    months += 12;
-                }
-
-                let html = `
-                    <div class="countdown-row">
-                        <div class="countdown-segment">
-                            <span class="countdown-number">${String(years).padStart(2, '0')}</span>
-                            <span class="countdown-label">Thn</span>
-                        </div>
-                        <div class="countdown-segment">
-                            <span class="countdown-number">${String(months).padStart(2, '0')}</span>
-                            <span class="countdown-label">Bln</span>
-                        </div>
-                        <div class="countdown-segment">
-                            <span class="countdown-number">${String(days).padStart(2, '0')}</span>
-                            <span class="countdown-label">Hari</span>
-                        </div>
-                    </div>
-                    <div class="countdown-row">
-                        <div class="countdown-segment">
-                            <span class="countdown-number">${String(hours).padStart(2, '0')}</span>
-                            <span class="countdown-label">Jam</span>
-                        </div>
-                        <div class="countdown-segment">
-                            <span class="countdown-number">${String(minutes).padStart(2, '0')}</span>
-                            <span class="countdown-label">Mnt</span>
-                        </div>
-                        <div class="countdown-segment">
-                            <span class="countdown-number">${String(seconds).padStart(2, '0')}</span>
-                            <span class="countdown-label">Detik</span>
-                        </div>
-                    </div>
-                `;
-
-                countdownEl.innerHTML = html;
-            }
-
-            updateTimer();
-            const timerInterval = setInterval(updateTimer, 1000);
+                updateTimer();
+                const timerInterval = setInterval(updateTimer, 1000);
+            @endif
 
             // ================= CUSTOM PLAYER LOGIC =================
             const videoPlayer = document.getElementById('videoPlayer');
