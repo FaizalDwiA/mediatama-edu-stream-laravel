@@ -32,6 +32,12 @@ Dengan EduStream, administrator dapat mengelola video, kategori, dan hak akses p
 *   **Pemutar Video Interaktif:** Player bawaan untuk memutar video pembelajaran setelah disetujui.
 *   **Batas Waktu Menonton (Expiry System):** Akses menonton dibatasi waktu (misal: 24 jam) dan otomatis berubah status menjadi *Expired* ketika masanya habis.
 
+### 🎨 Fitur Profil & Registrasi Premium
+*   **Interactive Avatar Uploader:** Form input file dengan desain modern yang memiliki efek hover glowing, overlay tombol, preview real-time, dan status file yang interaktif (di halaman registrasi dan pengaturan profil).
+*   **Kompresi Gambar Otomatis:** Sistem secara otomatis memotong (*crop*) dan mengompres foto profil menjadi format WebP berukuran 300x300 px menggunakan library **Intervention Image** (mengurangi beban storage dan mempercepat waktu muat).
+*   **Integrasi Navigasi & Dashboard:** Foto profil terintegrasi penuh di pojok kanan atas navbar portal customer serta di Dashboard Admin Filament (melalui kontrak `HasAvatar` pada model User).
+*   **Pengaman Registrasi Baru:** Formulir registrasi dilengkapi dengan indikator kekuatan password *real-time* untuk membantu pengguna memilih kata sandi yang aman dan checklist persetujuan Syarat & Ketentuan.
+
 ### 🛡️ Secure Streaming Engine (Keamanan Video)
 *   **URL Video Tersembunyi:** Path asli video di server tidak dibocorkan di sisi client.
 *   **Chunk-Based File Streaming:** Video dikirimkan dalam potongan data (chunk stream) untuk menghemat bandwidth, mendukung buffering cepat, dan mencegah pengunduhan langsung secara ilegal.
@@ -54,6 +60,7 @@ Dengan EduStream, administrator dapat mengelola video, kategori, dan hak akses p
 *   **CSS Styling:** TailwindCSS & Tailwind Nesting
 *   **Frontend Tools:** Vite & Blade Templates
 *   **Authentication:** Laravel Breeze
+*   **Image Processing:** Intervention Image v3 & Intervention Image Laravel
 
 ---
 
