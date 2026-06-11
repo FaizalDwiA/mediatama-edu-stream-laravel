@@ -20,6 +20,11 @@ class CustomerVideoController extends Controller
 
         $query = Video::with('category');
 
+        // Filter berdasarkan kategori jika ada query parameter
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->input('category'));
+        }
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -33,12 +38,16 @@ class CustomerVideoController extends Controller
 
         $videos = $query->get();
 
+        // Ambil semua kategori untuk filter pills
+        $categories = \App\Models\Category::all();
+        $selectedCategoryId = $request->input('category');
+
         // Ambil semua data request milik user ini untuk dicocokkan di blade
         $requests = AccessRequest::where('user_id', $userId)
             ->get()
             ->keyBy('video_id');
 
-        return view('dashboard', compact('videos', 'requests'));
+        return view('dashboard', compact('videos', 'requests', 'categories', 'selectedCategoryId'));
     }
 
     public function requestAccess($id)

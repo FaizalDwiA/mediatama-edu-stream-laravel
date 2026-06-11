@@ -177,6 +177,9 @@
             <!-- Search Bar (YouTube Style) -->
             <div class="hidden sm:flex items-center justify-center flex-1 max-w-xl mx-auto px-4">
                 <form action="{{ route('dashboard') }}" method="GET" class="w-full flex items-center justify-center">
+                    @if (request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
                     <div class="yt-search-container">
                         <div class="yt-search-box">
                             <!-- Input Search Icon (Hidden until focused) -->
@@ -241,8 +244,10 @@
 
             <!-- Mobile: Search Bar + Hamburger (YouTube style) -->
             <div class="flex items-center justify-end gap-3 flex-1 ml-4 sm:hidden">
-                <!-- Mobile Search Bar -->
                 <form action="{{ route('dashboard') }}" method="GET" class="w-full max-w-[180px] min-[400px]:max-w-[240px] flex items-center justify-center">
+                    @if (request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
                     <div class="yt-mobile-search-container">
                         <div class="yt-mobile-search-box">
                             <input type="text" name="search" value="{{ request('search') }}" placeholder="Telusuri" class="yt-mobile-search-input">

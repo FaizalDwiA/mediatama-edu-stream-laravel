@@ -68,20 +68,22 @@
                 cursor: pointer;
             }
 
-            .video-card:hover {
-                transform: scale(1.02);
-                z-index: 20;
-                background: rgba(30, 41, 59, 0.75) !important;
-                border-color: rgba(99, 102, 241, 0.4) !important;
-                box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2),
-                    0 8px 32px rgba(0, 0, 0, 0.5),
-                    0 0 20px rgba(99, 102, 241, 0.15) !important;
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-            }
+            @media (hover: hover) {
+                .video-card:hover {
+                    transform: scale(1.02);
+                    z-index: 20;
+                    background: rgba(30, 41, 59, 0.75) !important;
+                    border-color: rgba(99, 102, 241, 0.4) !important;
+                    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2),
+                        0 8px 32px rgba(0, 0, 0, 0.5),
+                        0 0 20px rgba(99, 102, 241, 0.15) !important;
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                }
 
-            .video-card:hover .video-thumbnail {
-                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+                .video-card:hover .video-thumbnail {
+                    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+                }
             }
 
             .preview-video {
@@ -92,14 +94,22 @@
                 object-fit: cover;
                 z-index: 2;
                 opacity: 0;
+                display: none;
                 pointer-events: none;
                 transition: opacity 0.3s ease;
                 border-radius: 12px;
             }
 
-            .video-card:hover .preview-video~.play-overlay {
-                opacity: 0;
-                pointer-events: none;
+            @media (hover: hover) {
+                .video-card:hover .preview-video {
+                    display: block;
+                    opacity: 1 !important;
+                }
+
+                .video-card:hover .preview-video~.play-overlay {
+                    opacity: 0;
+                    pointer-events: none;
+                }
             }
 
             .mute-btn {
@@ -157,19 +167,22 @@
                 cursor: pointer !important;
             }
 
-            .video-card:hover .video-progress-bar {
-                opacity: 1;
-            }
+            @media (hover: hover) {
+                .video-card:hover .video-progress-bar {
+                    opacity: 1;
+                }
 
-            .video-progress-bar:hover,
-            .video-progress-bar.dragging {
-                height: 8px !important;
+                .video-progress-bar:hover,
+                .video-progress-bar.dragging {
+                    height: 8px !important;
+                }
             }
 
             .video-progress-fill {
                 height: 100% !important;
                 width: 0%;
-                background: #ef4444 !important; /* YouTube Red */
+                background: #ef4444 !important;
+                /* YouTube Red */
                 transition: width 0.08s linear !important;
             }
 
@@ -189,9 +202,12 @@
                 box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
             }
 
-            .video-progress-bar:hover .video-progress-scrubber,
-            .video-progress-bar.dragging .video-progress-scrubber {
-                opacity: 1;
+            @media (hover: hover) {
+
+                .video-progress-bar:hover .video-progress-scrubber,
+                .video-progress-bar.dragging .video-progress-scrubber {
+                    opacity: 1;
+                }
             }
 
             /* Card Video Preview Tooltip */
@@ -222,7 +238,8 @@
 
             .card-preview-video-container {
                 width: 104px !important;
-                height: 58px !important; /* 16:9 ratio */
+                height: 58px !important;
+                /* 16:9 ratio */
                 border-radius: 4px !important;
                 overflow: hidden !important;
                 background: #000 !important;
@@ -360,7 +377,8 @@
                 padding: 4px 10px;
                 border-radius: 8px;
                 letter-spacing: 0.05em;
-                z-index: 20; /* Higher than locked-overlay (10) */
+                z-index: 20;
+                /* Higher than locked-overlay (10) */
                 transition: opacity 0.25s ease, transform 0.25s ease;
             }
 
@@ -568,7 +586,8 @@
             .locked-overlay {
                 position: absolute;
                 inset: 0;
-                background: rgba(15, 23, 42, 0.55) !important; /* Semi-transparent slate-900 */
+                background: rgba(15, 23, 42, 0.55) !important;
+                /* Semi-transparent slate-900 */
                 backdrop-filter: blur(8px) !important;
                 -webkit-backdrop-filter: blur(8px) !important;
                 display: flex;
@@ -663,10 +682,13 @@
             }
 
             @keyframes pulse-glow-amber {
-                0%, 100% {
+
+                0%,
+                100% {
                     box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
                     border-color: rgba(245, 158, 11, 0.3);
                 }
+
                 50% {
                     box-shadow: 0 0 22px rgba(245, 158, 11, 0.4);
                     border-color: rgba(245, 158, 11, 0.6);
@@ -681,7 +703,7 @@
                 margin-bottom: 0.15rem;
                 transition: color 0.3s ease;
             }
-            
+
             .overlay-subtitle {
                 font-size: 0.725rem;
                 color: #94a3b8;
@@ -780,6 +802,133 @@
             .pending-badge:active {
                 transform: scale(0.96);
             }
+
+            /* ── YouTube-style Category Pills ── */
+            .pill-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+
+            /* Fade-edge gradients */
+            .pill-wrapper::before,
+            .pill-wrapper::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 8px; /* accounts for padding-bottom on container */
+                width: 48px;
+                z-index: 2;
+                pointer-events: none;
+                transition: opacity 0.2s ease;
+            }
+
+            .pill-wrapper::before {
+                left: 36px; /* right edge of left arrow */
+                background: linear-gradient(to right, #0b0f19 0%, transparent 100%);
+            }
+
+            .pill-wrapper::after {
+                right: 36px; /* left edge of right arrow */
+                background: linear-gradient(to left, #0b0f19 0%, transparent 100%);
+            }
+
+            /* Hide fade when arrow hidden */
+            .pill-wrapper.at-start::before { opacity: 0; }
+            .pill-wrapper.at-end::after   { opacity: 0; }
+
+            /* Arrow buttons */
+            .pill-arrow {
+                flex-shrink: 0;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: none;
+                background: rgba(255, 255, 255, 0.1);
+                color: #f1f1f1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.15s ease, opacity 0.2s ease;
+                z-index: 3;
+                padding: 0;
+                position: relative;
+            }
+
+            .pill-arrow:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .pill-arrow:active {
+                background: rgba(255, 255, 255, 0.28);
+            }
+
+            .pill-arrow.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .pill-arrow svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .category-container {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                overflow-x: auto;
+                padding: 0 4px 8px;
+                flex: 1;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                scroll-behavior: smooth;
+            }
+
+            .category-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .category-pill {
+                display: inline-flex;
+                align-items: center;
+                white-space: nowrap;
+                padding: 0 12px;
+                height: 32px;
+                border-radius: 8px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                letter-spacing: 0;
+                cursor: pointer;
+                text-decoration: none !important;
+                border: none;
+                outline: none;
+                user-select: none;
+                transition: background 0.15s ease, color 0.15s ease;
+            }
+
+            /* Active — solid white, dark text (exactly YouTube) */
+            .category-pill.active {
+                background: #f1f1f1;
+                color: #0f0f0f !important;
+            }
+
+            /* Inactive — dark chip */
+            .category-pill.inactive {
+                background: rgba(255, 255, 255, 0.1);
+                color: #f1f1f1 !important;
+            }
+
+            .category-pill.inactive:hover {
+                background: rgba(255, 255, 255, 0.18);
+                color: #ffffff !important;
+            }
+
+            .category-pill:active {
+                opacity: 0.75;
+            }
         </style>
     @endpush
 
@@ -790,15 +939,20 @@
             @if (session('success'))
                 <div x-data="{ show: true }" x-show="show" x-transition class="session-alert alert-success">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            style="width: 20px; height: 20px;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span>{{ session('success') }}</span>
                     </div>
-                    <button @click="show = false" class="text-emerald-450 hover:text-emerald-250 transition-colors p-1.5 rounded-full hover:bg-emerald-500/10 flex items-center justify-center cursor-pointer" title="Tutup" style="background: transparent; border: none;">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <button @click="show = false"
+                        class="text-emerald-450 hover:text-emerald-250 transition-colors p-1.5 rounded-full hover:bg-emerald-500/10 flex items-center justify-center cursor-pointer"
+                        title="Tutup" style="background: transparent; border: none;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            style="width: 16px; height: 16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
@@ -807,19 +961,51 @@
             @if (session('error'))
                 <div x-data="{ show: true }" x-show="show" x-transition class="session-alert alert-error">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            style="width: 20px; height: 20px;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span>{{ session('error') }}</span>
                     </div>
-                    <button @click="show = false" class="text-rose-450 hover:text-rose-250 transition-colors p-1.5 rounded-full hover:bg-rose-500/10 flex items-center justify-center cursor-pointer" title="Tutup" style="background: transparent; border: none;">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <button @click="show = false"
+                        class="text-rose-450 hover:text-rose-250 transition-colors p-1.5 rounded-full hover:bg-rose-500/10 flex items-center justify-center cursor-pointer"
+                        title="Tutup" style="background: transparent; border: none;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            style="width: 16px; height: 16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
             @endif
+
+            <!-- Category Pills Filter (YouTube mobile style) -->
+            <div class="pill-wrapper" id="pillWrapper">
+                <!-- Left Arrow -->
+                <button class="pill-arrow hidden" id="pillArrowLeft" aria-label="Geser kiri" onclick="scrollPills(-1)">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+
+                <div class="category-container" id="categoryContainer">
+                    <a href="{{ route('dashboard', request()->only('search')) }}"
+                       class="category-pill {{ !$selectedCategoryId ? 'active' : 'inactive' }}">Semua Video</a>
+
+                    @foreach ($categories as $category)
+                        <a href="{{ route('dashboard', array_merge(request()->only('search'), ['category' => $category->id])) }}"
+                           class="category-pill {{ $selectedCategoryId == $category->id ? 'active' : 'inactive' }}">{{ $category->name }}</a>
+                    @endforeach
+                </div>
+
+                <!-- Right Arrow -->
+                <button class="pill-arrow" id="pillArrowRight" aria-label="Geser kanan" onclick="scrollPills(1)">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
 
             <!-- Video Catalog Grid -->
             <div class="video-grid">
@@ -830,7 +1016,9 @@
                             $userRequest &&
                             $userRequest->valid_until &&
                             \Carbon\Carbon::now()->gt($userRequest->valid_until);
-                        $isApproved = (auth()->user() && auth()->user()->role === 'admin') || ($userRequest && $userRequest->status === 'approved' && !$isExpired);
+                        $isApproved =
+                            (auth()->user() && auth()->user()->role === 'admin') ||
+                            ($userRequest && $userRequest->status === 'approved' && !$isExpired);
                         $gradIndex = ($loop->index % 6) + 1;
                     @endphp
 
@@ -841,12 +1029,13 @@
                             <div class="video-card">
                     @endif
                     <div class="video-thumbnail">
-                        @if($video->category)
+                        @if ($video->category)
                             <span class="video-tag">{{ $video->category->name }}</span>
                         @endif
-                        @if($video->thumbnail)
+                        @if ($video->thumbnail)
                             <div class="video-thumbnail-bg"
-                                style="background-image: url('{{ asset('storage/' . $video->thumbnail) }}'); background-size: cover; background-position: center;"></div>
+                                style="background-image: url('{{ asset('storage/' . $video->thumbnail) }}'); background-size: cover; background-position: center;">
+                            </div>
                         @else
                             <div class="video-thumbnail-bg grad-{{ $gradIndex }}"></div>
                         @endif
@@ -880,7 +1069,8 @@
                                 <!-- Card Preview Tooltip -->
                                 <div class="card-preview-tooltip">
                                     <div class="card-preview-video-container">
-                                        <video class="card-preview-video-element" src="{{ route('video.stream', $video->id) }}" muted preload="auto"></video>
+                                        <video class="card-preview-video-element"
+                                            src="{{ route('video.stream', $video->id) }}" muted preload="auto"></video>
                                     </div>
                                     <div class="card-preview-time-badge">0:00</div>
                                 </div>
@@ -899,11 +1089,15 @@
                         @else
                             <div class="locked-overlay">
                                 @if (!$userRequest)
-                                    <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin meminta akses untuk menonton video ini?');">
+                                    <form action="{{ route('video.request', $video->id) }}" method="POST"
+                                        class="w-full h-full flex flex-col items-center justify-center p-2"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin meminta akses untuk menonton video ini?');">
                                         @csrf
                                         <div class="lock-icon-container state-request">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                             </svg>
                                         </div>
                                         <span class="overlay-title text-slate-100">Akses Terkunci</span>
@@ -915,25 +1109,34 @@
                                 @elseif($userRequest->status === 'pending')
                                     <div class="w-full h-full flex flex-col items-center justify-center p-2">
                                         <div class="lock-icon-container state-pending">
-                                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                         <span class="overlay-title text-amber-400">Menunggu Persetujuan</span>
                                         <span class="overlay-subtitle">Sedang ditinjau oleh Admin</span>
-                                        <button type="button" class="pending-badge" onclick="alert('Permintaan akses Anda sedang ditinjau oleh Admin. Mohon bersabar atau hubungi Admin untuk informasi lebih lanjut.');">
-                                            <svg class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        <button type="button" class="pending-badge"
+                                            onclick="alert('Permintaan akses Anda sedang ditinjau oleh Admin. Mohon bersabar atau hubungi Admin untuk informasi lebih lanjut.');">
+                                            <svg class="w-3 h-3 animate-spin" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                             </svg>
                                             <span>Diproses</span>
                                         </button>
                                     </div>
                                 @elseif($userRequest->status === 'rejected')
-                                    <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin mengirim ulang permintaan akses untuk menonton video ini?');">
+                                    <form action="{{ route('video.request', $video->id) }}" method="POST"
+                                        class="w-full h-full flex flex-col items-center justify-center p-2"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin mengirim ulang permintaan akses untuk menonton video ini?');">
                                         @csrf
                                         <div class="lock-icon-container state-rejected">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                             </svg>
                                         </div>
                                         <span class="overlay-title text-orange-500">Permintaan Ditolak</span>
@@ -943,11 +1146,15 @@
                                         </button>
                                     </form>
                                 @elseif($isExpired)
-                                    <form action="{{ route('video.request', $video->id) }}" method="POST" class="w-full h-full flex flex-col items-center justify-center p-2" onsubmit="return confirm('Apakah Anda yakin ingin meminta ulang akses untuk menonton video ini?');">
+                                    <form action="{{ route('video.request', $video->id) }}" method="POST"
+                                        class="w-full h-full flex flex-col items-center justify-center p-2"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin meminta ulang akses untuk menonton video ini?');">
                                         @csrf
                                         <div class="lock-icon-container state-expired">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                         <span class="overlay-title text-rose-500">Akses Kedaluwarsa</span>
@@ -971,26 +1178,30 @@
 
                         <!-- Video Metadata -->
                         <div class="video-meta-content">
-                            <h3 class="video-title" title="{{ $video->title }}">{{ Str::limit($video->title, 55) }}</h3>
+                            <h3 class="video-title" title="{{ $video->title }}">{{ Str::limit($video->title, 55) }}
+                            </h3>
                             <p class="video-views-date">
                                 {{ $video->created_at->locale('id')->diffForHumans() }}
                             </p>
 
                             <!-- Video Actions (Pill Buttons) -->
                             <div class="video-actions-wrapper" style="margin-top: 0.25rem !important;">
-                                @if(auth()->user() && auth()->user()->role === 'admin')
+                                @if (auth()->user() && auth()->user()->role === 'admin')
                                     <div class="access-status-approved">
                                         <svg class="w-3.5 h-3.5 text-green-400 mr-1" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                                            stroke="currentColor" viewBox="0 0 24 24"
+                                            style="width: 14px; height: 14px;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                            </path>
                                         </svg>
                                         Akses Penuh (Admin)
                                     </div>
                                 @elseif($userRequest && $userRequest->status === 'approved' && !$isExpired)
                                     <div class="access-status-approved">
                                         <svg class="w-3.5 h-3.5 text-green-400 mr-1" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                                            stroke="currentColor" viewBox="0 0 24 24"
+                                            style="width: 14px; height: 14px;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -998,8 +1209,9 @@
                                     </div>
                                 @elseif($isExpired)
                                     <div class="access-status-expired">
-                                        <svg class="w-3.5 h-3.5 text-red-400 mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                                        <svg class="w-3.5 h-3.5 text-red-400 mr-1" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24"
+                                            style="width: 14px; height: 14px;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
                                             </path>
@@ -1024,7 +1236,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <p class="text-base font-semibold">Tidak ada video yang cocok dengan pencarian "{{ request('search') }}"</p>
+                    <p class="text-base font-semibold">Tidak ada video yang cocok dengan pencarian
+                        "{{ request('search') }}"</p>
                     <p class="text-xs text-slate-500 mt-1">Coba kata kunci lain atau <a
                             href="{{ route('dashboard') }}"
                             class="text-indigo-400 hover:text-indigo-300 underline font-medium transition-colors">bersihkan
@@ -1105,33 +1318,37 @@
 
                 let hoverTimeout;
 
-                card.addEventListener('mouseenter', () => {
-                    hoverTimeout = setTimeout(() => {
-                        video.setAttribute('preload', 'auto');
-                        video.style.opacity = '1';
-                        if (muteBtn) muteBtn.style.opacity = '1';
-                        if (progressBar) progressBar.style.opacity = '1';
-                        video.play().catch(error => {
-                            console.log('Hover preview play failed:', error);
-                        });
-                    }, 150);
-                });
+                if (window.matchMedia('(hover: hover)').matches) {
+                    card.addEventListener('mouseenter', () => {
+                        hoverTimeout = setTimeout(() => {
+                            video.setAttribute('preload', 'auto');
+                            video.style.display = 'block';
+                            video.style.opacity = '1';
+                            if (muteBtn) muteBtn.style.opacity = '1';
+                            if (progressBar) progressBar.style.opacity = '1';
+                            video.play().catch(error => {
+                                console.log('Hover preview play failed:', error);
+                            });
+                        }, 150);
+                    });
 
-                card.addEventListener('mouseleave', () => {
-                    clearTimeout(hoverTimeout);
-                    video.style.opacity = '0';
-                    if (muteBtn) muteBtn.style.opacity = '0';
-                    if (progressBar) progressBar.style.opacity = '0';
-                    if (progressFill) progressFill.style.width = '0%';
-                    if (progressScrubber) progressScrubber.style.left = '0%';
-                    if (cardTooltip) cardTooltip.classList.remove('active');
-                    video.pause();
-                    video.currentTime = 0;
-                    if (cardPreviewVid) {
-                        cardPreviewVid.pause();
-                        cardPreviewVid.currentTime = 0;
-                    }
-                });
+                    card.addEventListener('mouseleave', () => {
+                        clearTimeout(hoverTimeout);
+                        video.style.opacity = '0';
+                        video.style.display = 'none';
+                        if (muteBtn) muteBtn.style.opacity = '0';
+                        if (progressBar) progressBar.style.opacity = '0';
+                        if (progressFill) progressFill.style.width = '0%';
+                        if (progressScrubber) progressScrubber.style.left = '0%';
+                        if (cardTooltip) cardTooltip.classList.remove('active');
+                        video.pause();
+                        video.currentTime = 0;
+                        if (cardPreviewVid) {
+                            cardPreviewVid.pause();
+                            cardPreviewVid.currentTime = 0;
+                        }
+                    });
+                }
 
                 if (muteBtn) {
                     muteBtn.addEventListener('click', (e) => {
@@ -1188,13 +1405,15 @@
                                 moveEvent.preventDefault();
                                 moveEvent.stopPropagation();
                                 const percent = getTimelinePosition(moveEvent);
-                                if (progressFill) progressFill.style.width = `${percent * 100}%`;
-                                if (progressScrubber) progressScrubber.style.left = `${percent * 100}%`;
-                                
+                                if (progressFill) progressFill.style.width =
+                                `${percent * 100}%`;
+                                if (progressScrubber) progressScrubber.style.left =
+                                    `${percent * 100}%`;
+
                                 const time = percent * video.duration;
                                 if (!isNaN(time)) {
                                     video.currentTime = time;
-                                    
+
                                     const rect = progressBar.getBoundingClientRect();
                                     const clientX = moveEvent.clientX;
                                     let x = clientX - rect.left;
@@ -1203,7 +1422,8 @@
                                         cardTooltip.style.left = `${x}px`;
                                         cardTooltip.classList.add('active');
                                     }
-                                    if (cardPreviewTime) cardPreviewTime.textContent = formatTime(time);
+                                    if (cardPreviewTime) cardPreviewTime.textContent =
+                                        formatTime(time);
                                     if (cardPreviewVid) cardPreviewVid.currentTime = time;
                                 }
                             }
@@ -1236,13 +1456,15 @@
                             if (isDragging) {
                                 moveEvent.stopPropagation();
                                 const percent = getTimelinePosition(moveEvent);
-                                if (progressFill) progressFill.style.width = `${percent * 100}%`;
-                                if (progressScrubber) progressScrubber.style.left = `${percent * 100}%`;
-                                
+                                if (progressFill) progressFill.style.width =
+                                `${percent * 100}%`;
+                                if (progressScrubber) progressScrubber.style.left =
+                                    `${percent * 100}%`;
+
                                 const time = percent * video.duration;
                                 if (!isNaN(time)) {
                                     video.currentTime = time;
-                                    
+
                                     const rect = progressBar.getBoundingClientRect();
                                     const clientX = moveEvent.touches[0].clientX;
                                     let x = clientX - rect.left;
@@ -1251,7 +1473,8 @@
                                         cardTooltip.style.left = `${x}px`;
                                         cardTooltip.classList.add('active');
                                     }
-                                    if (cardPreviewTime) cardPreviewTime.textContent = formatTime(time);
+                                    if (cardPreviewTime) cardPreviewTime.textContent =
+                                        formatTime(time);
                                     if (cardPreviewVid) cardPreviewVid.currentTime = time;
                                 }
                             }
@@ -1274,9 +1497,13 @@
                             }
                         };
 
-                        document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+                        document.addEventListener('touchmove', touchMoveHandler, {
+                            passive: false
+                        });
                         document.addEventListener('touchend', touchEndHandler);
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
 
                     progressBar.addEventListener('mousemove', (e) => {
                         const rect = progressBar.getBoundingClientRect();
@@ -1300,5 +1527,37 @@
                 }
             });
         });
+
+        // ── Pill Arrow Scroll Logic (YouTube mobile style) ──
+        (function () {
+            const container = document.getElementById('categoryContainer');
+            const wrapper   = document.getElementById('pillWrapper');
+            const btnLeft   = document.getElementById('pillArrowLeft');
+            const btnRight  = document.getElementById('pillArrowRight');
+
+            if (!container || !wrapper || !btnLeft || !btnRight) return;
+
+            function updateArrows() {
+                const atStart = container.scrollLeft <= 2;
+                const atEnd   = container.scrollLeft + container.clientWidth >= container.scrollWidth - 2;
+
+                btnLeft.classList.toggle('hidden', atStart);
+                btnRight.classList.toggle('hidden', atEnd);
+                wrapper.classList.toggle('at-start', atStart);
+                wrapper.classList.toggle('at-end', atEnd);
+            }
+
+            window.scrollPills = function (dir) {
+                container.scrollBy({ left: dir * 220, behavior: 'smooth' });
+            };
+
+            container.addEventListener('scroll', updateArrows, { passive: true });
+
+            // Also update on resize (e.g. orientation change on mobile)
+            new ResizeObserver(updateArrows).observe(container);
+
+            // Initial state
+            updateArrows();
+        })();
     </script>
 </x-app-layout>
