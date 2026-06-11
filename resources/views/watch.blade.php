@@ -1,663 +1,6 @@
 <x-app-layout>
     @push('styles')
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
-            .watch-wrapper {
-                font-family: 'Outfit', sans-serif !important;
-                background-color: #0b0f19;
-                color: #f8fafc;
-                min-height: calc(100vh - 65px);
-            }
-
-            /* Desktop: side-by-side layout */
-            .watch-layout {
-                display: grid;
-                grid-template-columns: 2.2fr 1fr;
-                gap: 2rem;
-                align-items: start;
-            }
-
-            @media (max-width: 1024px) {
-                .watch-layout {
-                    grid-template-columns: 1fr;
-                    gap: 1.25rem;
-                }
-            }
-
-            .video-column {
-                width: 100%;
-            }
-
-            .info-column {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            /* Cinema player */
-            .cinema-container {
-                background: #000000;
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 20px;
-                overflow: hidden;
-                box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);
-                position: relative;
-            }
-
-            @media (max-width: 640px) {
-                .cinema-container {
-                    border-radius: 12px;
-                }
-            }
-
-            .cinema-glow {
-                position: absolute;
-                inset: -30px;
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(168, 85, 247, 0.12) 40%, rgba(0, 0, 0, 0) 70%);
-                filter: blur(40px);
-                z-index: -1;
-                pointer-events: none;
-            }
-
-            .video-player-wrapper {
-                position: relative;
-                background: #000000;
-                width: 100%;
-                aspect-ratio: 16/9;
-            }
-
-            /* Custom Video Player Styles (YouTube Inspired) */
-            .custom-video-player {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                background-color: #000;
-                overflow: hidden;
-                user-select: none;
-                -webkit-user-select: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .custom-video-player video {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                cursor: pointer;
-            }
-
-            /* Play/Pause Center Animation Overlay */
-            .play-pause-overlay {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                pointer-events: none;
-                z-index: 5;
-                background: rgba(0, 0, 0, 0);
-                opacity: 0;
-            }
-
-            .play-pause-overlay.animate {
-                animation: overlay-fade-scale 0.5s ease-out;
-            }
-
-            .overlay-icon {
-                background: rgba(15, 23, 42, 0.75);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: #ffffff;
-                padding: 1.25rem;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(4px);
-                -webkit-backdrop-filter: blur(4px);
-            }
-
-            .overlay-icon svg {
-                width: 32px;
-                height: 32px;
-                fill: currentColor;
-            }
-
-            @keyframes overlay-fade-scale {
-                0% {
-                    opacity: 0;
-                    transform: scale(0.6);
-                }
-
-                30% {
-                    opacity: 1;
-                    transform: scale(1.1);
-                }
-
-                80% {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-
-                100% {
-                    opacity: 0;
-                    transform: scale(0.9);
-                }
-            }
-
-            /* Spinner Loader */
-            .spinner-container {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: rgba(0, 0, 0, 0.4);
-                z-index: 4;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.2s ease;
-            }
-
-            .spinner-container.active {
-                opacity: 1;
-            }
-
-            .player-spinner {
-                width: 50px;
-                height: 50px;
-                border: 4px solid rgba(255, 255, 255, 0.25);
-                border-radius: 50%;
-                border-top-color: #ef4444;
-                animation: spin 1s linear infinite;
-            }
-
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            /* Controls Container */
-            .player-controls {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: linear-gradient(to top, rgba(8, 10, 16, 0.95) 0%, rgba(8, 10, 16, 0.6) 60%, transparent 100%);
-                padding: 0.65rem 1rem 0.85rem 1rem;
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                z-index: 10;
-                transition: opacity 0.30s cubic-bezier(0.4, 0, 0.2, 1), transform 0.30s cubic-bezier(0.4, 0, 0.2, 1);
-                pointer-events: auto;
-            }
-
-            .custom-video-player.hide-controls .player-controls {
-                opacity: 0;
-                transform: translateY(12px);
-                pointer-events: none;
-            }
-
-            /* Progress Area / Seek Bar */
-            .progress-area {
-                height: 4px;
-                width: 100%;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                position: relative;
-                transition: height 0.1s ease;
-            }
-
-            .progress-area:hover {
-                height: 8px;
-            }
-
-            /* Preview Tooltip Styles */
-            .player-preview-tooltip {
-                position: absolute;
-                bottom: 22px;
-                left: 0;
-                transform: translateX(-50%);
-                width: 140px;
-                background: rgba(15, 23, 42, 0.95);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 8px;
-                padding: 3px;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.15s ease;
-                z-index: 50;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                overflow: hidden;
-            }
-
-            .player-preview-tooltip.active {
-                opacity: 1;
-            }
-
-            .preview-video-container {
-                width: 134px;
-                height: 75px;
-                /* 16:9 ratio */
-                border-radius: 6px;
-                overflow: hidden;
-                background: #000;
-            }
-
-            .preview-video-container video {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-            .preview-time-badge {
-                margin-top: 4px;
-                color: #ffffff;
-                font-size: 0.72rem;
-                font-family: monospace, sans-serif;
-                font-weight: 600;
-            }
-
-            .progress-bar-wrapper {
-                height: 100%;
-                width: 100%;
-                position: relative;
-                background: rgba(255, 255, 255, 0.25);
-                border-radius: 4px;
-                overflow: visible;
-            }
-
-            .progress-bg {
-                position: absolute;
-                inset: 0;
-            }
-
-            .buffer-progress {
-                position: absolute;
-                left: 0;
-                top: 0;
-                height: 100%;
-                width: 0%;
-                background: rgba(255, 255, 255, 0.4);
-                border-radius: 4px;
-                transition: width 0.15s ease;
-            }
-
-            .current-progress {
-                position: absolute;
-                left: 0;
-                top: 0;
-                height: 100%;
-                width: 0%;
-                background: #ef4444;
-                /* YT Red */
-                border-radius: 4px;
-            }
-
-            .scrubber-dot {
-                position: absolute;
-                left: 0%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                width: 13px;
-                height: 13px;
-                border-radius: 50%;
-                background: #ef4444;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.15s ease, transform 0.15s ease;
-                z-index: 12;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-            }
-
-            .progress-area:hover .scrubber-dot,
-            .progress-area.dragging .scrubber-dot {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.15);
-            }
-
-            /* Bottom Controls Row */
-            .controls-bar {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-            }
-
-            .left-controls,
-            .right-controls {
-                display: flex;
-                align-items: center;
-                gap: 0.85rem;
-            }
-
-            .control-btn {
-                background: transparent;
-                border: none;
-                color: #e2e8f0;
-                cursor: pointer;
-                padding: 5px;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: color 0.15s ease, background-color 0.15s ease;
-            }
-
-            .control-btn:hover {
-                color: #ffffff;
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-            .control-btn svg {
-                width: 20px;
-                height: 20px;
-            }
-
-            /* Volume slider slide-out action */
-            .volume-container {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-
-            .volume-slider {
-                width: 0;
-                opacity: 0;
-                transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-                cursor: pointer;
-                height: 4px;
-                accent-color: #ef4444;
-                outline: none;
-                background: rgba(255, 255, 255, 0.2);
-                border-radius: 2px;
-            }
-
-            .volume-container:hover .volume-slider,
-            .volume-slider:focus,
-            .volume-slider:active {
-                width: 65px;
-                opacity: 1;
-            }
-
-            .time-display {
-                font-size: 0.825rem;
-                color: #cbd5e1;
-                font-family: monospace, sans-serif;
-                margin-left: 0.25rem;
-            }
-
-            /* Playback Speed settings popup */
-            .speed-container {
-                position: relative;
-            }
-
-            .speed-btn {
-                font-size: 0.825rem;
-                font-weight: 700;
-                color: #cbd5e1;
-                background: rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(255, 255, 255, 0.12);
-                padding: 4px 8px;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all 0.15s ease;
-            }
-
-            .speed-btn:hover {
-                color: #ffffff;
-                background-color: rgba(255, 255, 255, 0.18);
-            }
-
-            .speed-options {
-                position: absolute;
-                bottom: 38px;
-                right: 0;
-                background: rgba(15, 23, 42, 0.96);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 8px;
-                overflow: hidden;
-                width: 100px;
-                display: flex;
-                flex-direction: column;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
-                opacity: 0;
-                pointer-events: none;
-                transform: translateY(8px);
-                transition: opacity 0.15s ease, transform 0.15s ease;
-                z-index: 20;
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-            }
-
-            .speed-options.active {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translateY(0);
-            }
-
-            .speed-item {
-                padding: 8px 12px;
-                font-size: 0.775rem;
-                color: #cbd5e1;
-                cursor: pointer;
-                text-align: center;
-                transition: all 0.15s ease;
-                font-weight: 500;
-            }
-
-            .speed-item:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: #ffffff;
-            }
-
-            .speed-item.active {
-                color: #ef4444;
-                font-weight: 700;
-                background-color: rgba(239, 68, 68, 0.08);
-            }
-
-            /* Timer Card & Metadata Card - Unified Glassmorphism Style */
-            .timer-card,
-            .metadata-card {
-                background: rgba(17, 24, 39, 0.45) !important;
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                border: 1px solid rgba(255, 255, 255, 0.06) !important;
-                border-radius: 20px !important;
-                padding: 1.5rem !important;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35) !important;
-                transition: all 0.3s ease;
-            }
-
-            .timer-card:hover,
-            .metadata-card:hover {
-                border-color: rgba(255, 255, 255, 0.12) !important;
-                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45) !important;
-            }
-
-            .timer-icon-wrapper {
-                background: rgba(239, 68, 68, 0.1);
-                padding: 6px;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 1px solid rgba(239, 68, 68, 0.2);
-            }
-
-            @media (max-width: 640px) {
-                .timer-card,
-                .metadata-card {
-                    padding: 1.25rem !important;
-                    border-radius: 14px !important;
-                }
-
-                .metadata-card h1 {
-                    font-size: 1.25rem !important;
-                    margin-bottom: 0.75rem !important;
-                }
-            }
-
-            .countdown-container {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                margin-top: 0.5rem;
-                margin-bottom: 0.25rem;
-                width: 100%;
-            }
-
-            .countdown-row {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 0.35rem;
-                width: 100%;
-            }
-
-            .countdown-segment {
-                background: rgba(15, 23, 42, 0.55);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 12px;
-                padding: 0.6rem 0.5rem;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.25);
-                transition: all 0.2s ease;
-            }
-
-            .countdown-segment:hover {
-                border-color: rgba(239, 68, 68, 0.35);
-                background: rgba(15, 23, 42, 0.7);
-                transform: translateY(-2px);
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(239, 68, 68, 0.12);
-            }
-
-            .countdown-number {
-                font-size: 1.45rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #ff8787, #ef4444);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                font-family: monospace, 'Outfit';
-                line-height: 1.1;
-            }
-
-            .countdown-label {
-                font-size: 0.58rem;
-                text-transform: uppercase;
-                letter-spacing: 0.06em;
-                color: #94a3b8;
-                font-weight: 700;
-                margin-top: 4px;
-            }
-
-            /* Expiry Badge Style */
-            .expiry-badge {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.45rem;
-                margin-top: 1rem;
-                background: rgba(239, 68, 68, 0.06);
-                border: 1px solid rgba(239, 68, 68, 0.15);
-                color: #f87171;
-                font-size: 0.8rem;
-                font-weight: 600;
-                padding: 0.5rem 1rem;
-                border-radius: 30px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-
-            /* Video Description Box Style */
-            .video-description-box {
-                background: rgba(15, 23, 42, 0.4);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                border-radius: 12px;
-                padding: 1.1rem;
-                color: #cbd5e1;
-                font-size: 0.875rem;
-                line-height: 1.6;
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-            }
-
-            /* Back Button */
-            .btn-back {
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: #cbd5e1;
-                padding: 0.55rem 1.1rem;
-                border-radius: 12px;
-                font-weight: 600;
-                font-size: 0.875rem;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.45rem;
-                transition: all 0.3s ease;
-            }
-
-            .btn-back:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #ffffff;
-                border-color: rgba(255, 255, 255, 0.2);
-                transform: translateX(-2px);
-            }
-
-            /* Mobile wrapper padding */
-            @media (max-width: 640px) {
-                .watch-wrapper {
-                    padding-top: 1.25rem !important;
-                    padding-bottom: 2rem !important;
-                }
-
-                .watch-inner {
-                    padding-left: 1rem;
-                    padding-right: 1rem;
-                }
-
-                .watch-back-row {
-                    margin-bottom: 1rem;
-                }
-            }
-            /* 2x Speed Indicator Overlay */
-            .speed-indicator-overlay {
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(15, 23, 42, 0.85);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                color: #ffffff;
-                padding: 6px 14px;
-                border-radius: 30px;
-                font-size: 0.85rem;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                z-index: 15;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.2s ease, transform 0.2s ease;
-            }
-
-            .speed-indicator-overlay.active {
-                opacity: 1;
-                transform: translate(-50%, 4px);
-            }
-        </style>
+        @vite(['resources/css/watch.css'])
     @endpush
 
     <div class="watch-wrapper py-8 sm:py-12">
@@ -687,13 +30,15 @@
                             <div class="video-player-wrapper">
                                 @if ($video->video_path)
                                     <div class="custom-video-player" id="videoPlayer">
-                                        <video id="mainVideo" src="{{ route('video.stream', $video->id) }}"
-                                            autoplay preload="auto" playsinline></video>
+                                        <video id="mainVideo" src="{{ route('video.stream', $video->id) }}" autoplay
+                                            preload="auto" playsinline></video>
 
                                         <!-- 2x Speed Banner Overlay -->
                                         <div class="speed-indicator-overlay" id="speedIndicatorOverlay">
-                                            <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20" style="width: 18px; height: 18px;">
-                                                <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4zM11.555 5.168A1 1 0 0010 6v8a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4z"/>
+                                            <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"
+                                                style="width: 18px; height: 18px;">
+                                                <path
+                                                    d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4zM11.555 5.168A1 1 0 0010 6v8a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4z" />
                                             </svg>
                                             <span>2x Kecepatan</span>
                                         </div>
@@ -844,24 +189,28 @@
 
                         <!-- Watch Timer / Countdown Card -->
                         <div class="timer-card">
-                            @if(auth()->user() && auth()->user()->role === 'admin')
+                            @if (auth()->user() && auth()->user()->role === 'admin')
                                 <div class="timer-header flex items-center gap-2 mb-3">
-                                    <div class="timer-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+                                    <div class="timer-icon-wrapper"
+                                        style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
                                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                            </path>
                                         </svg>
                                     </div>
-                                    <span class="text-xs uppercase tracking-wider text-slate-300 font-bold">Status Akses</span>
+                                    <span class="text-xs uppercase tracking-wider text-slate-300 font-bold">Status
+                                        Akses</span>
                                 </div>
                                 <div class="timer-body">
                                     <div class="countdown-container text-center py-4">
                                         <span class="text-lg font-bold text-emerald-400">Akses Penuh (Admin)</span>
                                     </div>
-                                    <div class="expiry-badge" style="background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.15); color: #34d399;">
-                                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
+                                    <div class="expiry-badge"
+                                        style="background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.15); color: #34d399;">
+                                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                             </path>
@@ -898,19 +247,23 @@
 
                         <!-- Video Metadata Card -->
                         <div class="metadata-card">
-                            @if($video->category)
+                            @if ($video->category)
                                 <div class="mb-4">
-                                    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-indigo-100 bg-gradient-to-r from-indigo-500/15 to-purple-500/5 border border-indigo-500/30 shadow-lg shadow-indigo-500/5 transition-all duration-300 hover:border-indigo-400/50 hover:shadow-indigo-500/10">
+                                    <span
+                                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-indigo-100 bg-gradient-to-r from-indigo-500/15 to-purple-500/5 border border-indigo-500/30 shadow-lg shadow-indigo-500/5 transition-all duration-300 hover:border-indigo-400/50 hover:shadow-indigo-500/10">
                                         <span class="relative flex h-2 w-2">
-                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                                            <span
+                                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                            <span
+                                                class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
                                         </span>
                                         <span class="text-indigo-400 font-extrabold">#</span>
                                         <span>{{ $video->category->name }}</span>
                                     </span>
                                 </div>
                             @endif
-                            <h1 class="text-xl sm:text-2xl font-extrabold text-white mb-3 leading-tight">{{ $video->title }}
+                            <h1 class="text-xl sm:text-2xl font-extrabold text-white mb-3 leading-tight">
+                                {{ $video->title }}
                             </h1>
                             <hr class="border-slate-800/80 mb-4">
                             <div class="description-section">
@@ -941,7 +294,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // ================= COUNTDOWN TIMER LOGIC =================
-            @if(auth()->user() && auth()->user()->role === 'admin')
+            @if (auth()->user() && auth()->user()->role === 'admin')
                 // Akses Penuh Admin: Tidak perlu logika countdown timer
             @else
                 const expiryTime = new Date("{{ $access->valid_until->toIso8601String() }}").getTime();
@@ -1074,76 +427,78 @@
                 }
             }
 
-             playPauseBtn.addEventListener('click', togglePlay);
-             
-             // ================= 2X SPEED ON HOLD LOGIC =================
-             let holdTimeout;
-             let isHolding = false;
-             let originalPlaybackRate = 1;
-             let preventClick = false;
- 
-             const startHold = (e) => {
-                 // Only left click for mouse, or touch events
-                 if (e.type === 'mousedown' && e.button !== 0) return;
+            playPauseBtn.addEventListener('click', togglePlay);
 
-                 // Check click/touch position relative to the video width
-                 const rect = mainVideo.getBoundingClientRect();
-                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                 const clickX = clientX - rect.left;
-                 const percentage = clickX / rect.width;
+            // ================= 2X SPEED ON HOLD LOGIC =================
+            let holdTimeout;
+            let isHolding = false;
+            let originalPlaybackRate = 1;
+            let preventClick = false;
 
-                 // Only trigger hold-to-speed-up if click/touch is on the left (< 40%) or right (> 60%)
-                 if (percentage >= 0.4 && percentage <= 0.6) {
-                     return;
-                 }
-                 
-                 isHolding = false;
-                 originalPlaybackRate = mainVideo.playbackRate;
-                 
-                 holdTimeout = setTimeout(() => {
-                     isHolding = true;
-                     preventClick = true;
-                     mainVideo.playbackRate = 2.0;
-                     if (speedIndicatorOverlay) {
-                         speedIndicatorOverlay.classList.add('active');
-                     }
-                     // Temporarily update speed button text
-                     speedBtn.textContent = '2.0x';
-                 }, 450); // 450ms long press
-             };
- 
-             const endHold = () => {
-                 clearTimeout(holdTimeout);
-                 if (isHolding) {
-                     isHolding = false;
-                     mainVideo.playbackRate = originalPlaybackRate;
-                     if (speedIndicatorOverlay) {
-                         speedIndicatorOverlay.classList.remove('active');
-                     }
-                     // Restore speed button text
-                     const currentActiveSpeedItem = document.querySelector('.speed-item.active');
-                     if (currentActiveSpeedItem) {
-                         const speed = parseFloat(currentActiveSpeedItem.dataset.speed);
-                         speedBtn.textContent = speed === 1 ? 'Normal' : `${speed}x`;
-                     }
-                 }
-             };
- 
-             mainVideo.addEventListener('mousedown', startHold);
-             mainVideo.addEventListener('mouseup', endHold);
-             mainVideo.addEventListener('mouseleave', endHold);
- 
-             mainVideo.addEventListener('touchstart', startHold, { passive: true });
-             mainVideo.addEventListener('touchend', endHold);
-             mainVideo.addEventListener('touchcancel', endHold);
- 
-             mainVideo.addEventListener('click', (e) => {
-                 if (preventClick) {
-                     preventClick = false;
-                     return;
-                 }
-                 togglePlay();
-             });
+            const startHold = (e) => {
+                // Only left click for mouse, or touch events
+                if (e.type === 'mousedown' && e.button !== 0) return;
+
+                // Check click/touch position relative to the video width
+                const rect = mainVideo.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clickX = clientX - rect.left;
+                const percentage = clickX / rect.width;
+
+                // Only trigger hold-to-speed-up if click/touch is on the left (< 40%) or right (> 60%)
+                if (percentage >= 0.4 && percentage <= 0.6) {
+                    return;
+                }
+
+                isHolding = false;
+                originalPlaybackRate = mainVideo.playbackRate;
+
+                holdTimeout = setTimeout(() => {
+                    isHolding = true;
+                    preventClick = true;
+                    mainVideo.playbackRate = 2.0;
+                    if (speedIndicatorOverlay) {
+                        speedIndicatorOverlay.classList.add('active');
+                    }
+                    // Temporarily update speed button text
+                    speedBtn.textContent = '2.0x';
+                }, 450); // 450ms long press
+            };
+
+            const endHold = () => {
+                clearTimeout(holdTimeout);
+                if (isHolding) {
+                    isHolding = false;
+                    mainVideo.playbackRate = originalPlaybackRate;
+                    if (speedIndicatorOverlay) {
+                        speedIndicatorOverlay.classList.remove('active');
+                    }
+                    // Restore speed button text
+                    const currentActiveSpeedItem = document.querySelector('.speed-item.active');
+                    if (currentActiveSpeedItem) {
+                        const speed = parseFloat(currentActiveSpeedItem.dataset.speed);
+                        speedBtn.textContent = speed === 1 ? 'Normal' : `${speed}x`;
+                    }
+                }
+            };
+
+            mainVideo.addEventListener('mousedown', startHold);
+            mainVideo.addEventListener('mouseup', endHold);
+            mainVideo.addEventListener('mouseleave', endHold);
+
+            mainVideo.addEventListener('touchstart', startHold, {
+                passive: true
+            });
+            mainVideo.addEventListener('touchend', endHold);
+            mainVideo.addEventListener('touchcancel', endHold);
+
+            mainVideo.addEventListener('click', (e) => {
+                if (preventClick) {
+                    preventClick = false;
+                    return;
+                }
+                togglePlay();
+            });
 
             mainVideo.addEventListener('play', () => {
                 playIcon.classList.add('hidden');
@@ -1535,7 +890,8 @@
                 const playPromise = mainVideo.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
-                        console.log('Unmuted autoplay blocked by browser. Trying muted autoplay...', error);
+                        console.log('Unmuted autoplay blocked by browser. Trying muted autoplay...',
+                            error);
                         // Mute and try playing again
                         setVolume(0);
                         mainVideo.play().catch(err => {
@@ -1548,7 +904,9 @@
             if (mainVideo.readyState >= 1) {
                 startPlay();
             } else {
-                mainVideo.addEventListener('loadedmetadata', startPlay, { once: true });
+                mainVideo.addEventListener('loadedmetadata', startPlay, {
+                    once: true
+                });
             }
 
             // Fallback: play on first interaction on the page if still paused

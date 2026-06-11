@@ -57,7 +57,7 @@ class VideoSeeder extends Seeder
             [
                 'category_id' => $chainsawVideo?->id,
                 'title' => 'Chainsaw Man',
-                'thumbnail' => 'thumbnails/sample6.jpg',
+                'thumbnail' => 'thumbnails/sample6.webp',
                 'description' => 'Kisah Denji, seorang pemuda miskin yang bertransformasi menjadi Public Safety Devil Hunter berkekuatan gergaji mesin setelah bersatu dengan Pochita.',
                 'video_path' => 'videos/sample6.mp4',
             ],
