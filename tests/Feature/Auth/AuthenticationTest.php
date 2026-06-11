@@ -51,4 +51,36 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
         $response->assertRedirect('/');
     }
+
+    public function test_admin_is_redirected_to_admin_panel_even_if_intended_url_is_dashboard(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        // Simulate visiting dashboard as a guest, which sets intended URL to dashboard
+        $this->get('/dashboard');
+
+        $response = $this->post('/login', [
+            'email' => $admin->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect('/admin');
+    }
+
+    public function test_admin_is_redirected_to_intended_admin_url_if_it_contains_admin(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        // Simulate visiting an admin page as a guest, which sets intended URL to that page
+        $this->get('/admin/users');
+
+        $response = $this->post('/login', [
+            'email' => $admin->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect('/admin/users');
+    }
 }

@@ -1015,8 +1015,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <p class="text-base font-semibold">Tidak ada video yang cocok dengan pencarian
-                        "{{ request('search') }}"</p>
+                    <p class="text-base font-semibold">Tidak ada video yang cocok dengan pencarian "{{ request('search') }}"</p>
                     <p class="text-xs text-slate-500 mt-1">Coba kata kunci lain atau <a
                             href="{{ route('dashboard') }}"
                             class="text-indigo-400 hover:text-indigo-300 underline font-medium transition-colors">bersihkan

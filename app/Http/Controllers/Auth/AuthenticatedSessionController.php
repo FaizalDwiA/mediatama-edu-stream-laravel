@@ -33,6 +33,10 @@ class AuthenticatedSessionController extends Controller
 
         // 💡 ATUR PENGALIHAN BERDASARKAN ROLE
         if ($user->role === 'admin') {
+            $intended = session()->get('url.intended');
+            if ($intended && !str_contains($intended, '/admin')) {
+                session()->forget('url.intended');
+            }
             return redirect()->intended('/admin'); // Admin masuk ke Filament
         }
 
