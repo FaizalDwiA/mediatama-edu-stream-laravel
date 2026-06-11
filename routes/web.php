@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [CustomerVideoController::class, 'index'])->name('dashboard');
     Route::post('/video/{id}/request', [CustomerVideoController::class, 'requestAccess'])->name('video.request');
     Route::get('/video/{id}/watch', [CustomerVideoController::class, 'watch'])->name('video.watch');
