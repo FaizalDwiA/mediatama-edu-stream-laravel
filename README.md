@@ -140,12 +140,12 @@ npm run build
 Setelah proses seeding selesai, Anda dapat langsung masuk menggunakan akun default berikut untuk mencoba fungsionalitas sistem:
 
 ### 🛡️ Akun Administrator (Akses Dashboard Admin)
-*   **Halaman Login:** [http://localhost:8000/admin/login](http://localhost:8000/admin/login)
+*   **Halaman Login:** [http://127.0.0.1:174/admin/login](http://127.0.0.1:174/admin/login)
 *   **Email:** `admin@edustream.com`
 *   **Password:** `password`
 
-### 👥 Akun Customer (Akses Portal Dashboard Belajar)
-*   **Halaman Login:** [http://localhost:8000/login](http://localhost:8000/login)
+### 👥 Portal Customer (Akses Portal Dashboard Belajar)
+*   **Halaman Login:** [http://127.0.0.1:174/login](http://127.0.0.1:174/login)
 *   **Email:** `faizal@edustream.com`
 *   **Password:** `password`
 
@@ -160,10 +160,9 @@ composer dev
 ```
 
 Perintah `composer dev` di atas akan menjalankan beberapa service secara bersamaan menggunakan `concurrently`:
-1.  **Server Laravel:** Menjalankan `php artisan serve` pada `http://localhost:8000`.
-2.  **Vite Server:** Menjalankan `npm run dev` untuk hot reload CSS & JS.
+1.  **Server Laravel:** Menjalankan `php artisan serve` pada `http://127.0.0.1:174`.
+2.  **Vite Server:** Menjalankan `npm run dev` untuk hot reload CSS & JS (otomatis membuka browser).
 3.  **Queue Listener:** Menjalankan `php artisan queue:listen` untuk memproses job di latar belakang.
-4.  **Log Tracker:** Menjalankan `php artisan pail` untuk memonitor error log secara langsung di terminal Anda.
 
 *Catatan: Pastikan server database MySQL (seperti XAMPP / Laragon) Anda sudah dalam keadaan aktif sebelum menjalankan aplikasi.*
 
