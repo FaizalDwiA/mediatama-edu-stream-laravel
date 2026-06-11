@@ -27,6 +27,36 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\FileUpload::make('profile_photo')
+                    ->label('Foto Profil')
+                    ->directory('profile_photos')
+                    ->visibility('public')
+                    ->image()
+                    ->avatar()
+                    ->imageEditor()
+                    ->maxSize(1024)
+                    ->nullable()
+                    ->saveUploadedFileUsing(function ($file) {
+                        $filename = 'avatar_' . uniqid() . '.webp';
+                        $dirPath = storage_path('app/public/profile_photos');
+                        $path = $dirPath . '/' . $filename;
+
+                        if (!file_exists($dirPath)) {
+                            mkdir($dirPath, 0755, true);
+                        }
+
+                        try {
+                            $image = \Intervention\Image\Laravel\Facades\Image::read($file->getRealPath());
+                            $image->cover(300, 300);
+
+                            $encoded = $image->toWebp(80);
+                            file_put_contents($path, (string) $encoded);
+
+                            return 'profile_photos/' . $filename;
+                        } catch (\Exception $e) {
+                            return $file->storeAs('profile_photos', $file->hashName(), 'public');
+                        }
+                    }),
                 TextInput::make('name')
                     ->label('Nama Lengkap')
                     ->required()
@@ -59,6 +89,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('profile_photo')
+                    ->label('Foto')
+                    ->circular(),
                 TextColumn::make('name')->label('Nama')->searchable()->sortable(),
                 TextColumn::make('email')->label('Email')->searchable(),
                 TextColumn::make('role')

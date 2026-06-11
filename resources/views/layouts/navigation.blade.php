@@ -208,8 +208,12 @@
                 <!-- Settings Dropdown -->
                 <x-dropdown align="right" width="48" contentClasses="p-0 bg-transparent rounded-md shadow-2xl">
                     <x-slot name="trigger">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all shadow-md flex items-center justify-center text-white font-bold text-sm uppercase cursor-pointer select-none" style="border: 1px solid rgba(255, 255, 255, 0.12) !important;">
-                            {{ substr(Auth::user()->name, 0, 1) }}
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all shadow-md flex items-center justify-center text-white font-bold text-sm uppercase cursor-pointer select-none overflow-hidden" style="border: 1px solid rgba(255, 255, 255, 0.12) !important;">
+                            @if(Auth::user()->profile_photo)
+                                <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="w-full h-full object-cover" alt="{{ Auth::user()->name }}">
+                            @else
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            @endif
                         </div>
                     </x-slot>
 

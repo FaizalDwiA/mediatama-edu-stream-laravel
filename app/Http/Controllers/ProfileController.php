@@ -26,13 +26,43 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->safe()->only(['name', 'email']));
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        if ($request->hasFile('profile_photo')) {
+            // Hapus foto profil lama jika ada
+            if ($user->profile_photo && file_exists(storage_path('app/public/' . $user->profile_photo))) {
+                @unlink(storage_path('app/public/' . $user->profile_photo));
+            }
+
+            $file = $request->file('profile_photo');
+            $filename = 'avatar_' . uniqid() . '.webp';
+            $dirPath = storage_path('app/public/profile_photos');
+
+            if (!file_exists($dirPath)) {
+                mkdir($dirPath, 0755, true);
+            }
+
+            try {
+                // Kompres & resize ke 300x300 px menggunakan Intervention Image (v3)
+                $image = \Intervention\Image\Laravel\Facades\Image::read($file->getRealPath());
+                $image->cover(300, 300);
+
+                $encoded = $image->toWebp(80);
+                file_put_contents($dirPath . '/' . $filename, (string) $encoded);
+
+                $user->profile_photo = 'profile_photos/' . $filename;
+            } catch (\Exception $e) {
+                // Fallback jika terjadi kesalahan
+                $user->profile_photo = $file->store('profile_photos', 'public');
+            }
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
