@@ -54,7 +54,36 @@ class VideoResource extends Resource
                     ->image() // Memastikan file yang diupload wajib berupa gambar (jpg, png, webp)
                     ->imageEditor() // (Opsional) Memunculkan fitur potong/crop gambar bawaan Filament biar keren
                     ->maxSize(2048) // Batasi maksimal ukuran gambar 2MB
-                    ->nullable(),
+                    ->nullable()
+                    ->saveUploadedFileUsing(function ($file) {
+                        $filename = 'thumbnail_' . uniqid() . '.webp';
+                        $dirPath = storage_path('app/public/thumbnails');
+                        $path = $dirPath . '/' . $filename;
+
+                        // Pastikan folder thumbnails ada
+                        if (!file_exists($dirPath)) {
+                            mkdir($dirPath, 0755, true);
+                        }
+
+                        try {
+                            // Menggunakan Intervention Image (v3) untuk membaca file
+                            $image = \Intervention\Image\Laravel\Facades\Image::read($file->getRealPath());
+
+                            // Lakukan resize jika lebar lebih dari 1280px secara proporsional
+                            if ($image->width() > 1280) {
+                                $image->scale(width: 1280);
+                            }
+
+                            // Konversi ke format WebP dengan kualitas 80 (sangat hemat size & tetap tajam)
+                            $encoded = $image->toWebp(80);
+                            file_put_contents($path, (string) $encoded);
+
+                            return 'thumbnails/' . $filename;
+                        } catch (\Exception $e) {
+                            // Fallback jika terjadi kesalahan
+                            return $file->storeAs('thumbnails', $file->hashName(), 'public');
+                        }
+                    }),
                 FileUpload::make('video_path')
                     ->label('Upload File Video (.mp4)')
                     ->directory('videos')
