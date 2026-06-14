@@ -24,6 +24,12 @@ export default defineConfig(({
         ],
         server: {
             host: 'localhost',
+            // Tambahkan konfigurasi CORS di bawah ini
+            cors: {
+                origin: '*',
+                methods: ['GET', 'OPTIONS'],
+                allowedHeaders: ['Content-Type', 'Authorization'],
+            },
         },
     };
 });
