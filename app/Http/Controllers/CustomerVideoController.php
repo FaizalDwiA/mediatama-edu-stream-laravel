@@ -161,6 +161,11 @@ class CustomerVideoController extends Controller
     {
         $userId = auth()->id();
         $video = Video::findOrFail($id);
+
+        if ($video->status !== 'ready') {
+            abort(403, 'Video sedang diproses atau gagal dikompresi.');
+        }
+
         $user = auth()->user();
 
         // Jika user adalah admin, bypass pengecekan akses

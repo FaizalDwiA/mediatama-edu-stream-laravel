@@ -251,7 +251,32 @@
                                 <div class="video-progress-scrubber"></div>
                             </div>
                         @endif
-                        @if ($isApproved)
+                        @if ($video->status === 'processing')
+                            <div class="locked-overlay" style="background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px);">
+                                <div class="w-full h-full flex flex-col items-center justify-center p-2 text-center">
+                                    <div class="lock-icon-container" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
+                                        <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                    </div>
+                                    <span class="overlay-title text-amber-500 font-bold" style="font-size: 0.875rem;">Sedang Diproses</span>
+                                    <span class="overlay-subtitle text-slate-400" style="font-size: 0.75rem;">Video sedang dikompresi</span>
+                                </div>
+                            </div>
+                        @elseif ($video->status === 'failed')
+                            <div class="locked-overlay" style="background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px);">
+                                <div class="w-full h-full flex flex-col items-center justify-center p-2 text-center">
+                                    <div class="lock-icon-container" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <span class="overlay-title text-red-500 font-bold" style="font-size: 0.875rem;">Proses Gagal</span>
+                                    <span class="overlay-subtitle text-slate-400" style="font-size: 0.75rem;">Hubungi Admin</span>
+                                </div>
+                            </div>
+                        @elseif ($isApproved)
                             <div class="play-overlay">
                                 <div class="play-btn-circle">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -380,7 +405,22 @@
 
                             <!-- Video Actions (Pill Buttons) -->
                             <div class="video-actions-wrapper" style="margin-top: 0.25rem !important;">
-                                @if (auth()->user() && auth()->user()->role === 'admin')
+                                @if ($video->status === 'processing')
+                                    <div class="access-status-pending" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">
+                                        <svg class="w-3 animate-spin mr-1 text-amber-400" fill="none" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        Sedang Diproses
+                                    </div>
+                                @elseif ($video->status === 'failed')
+                                    <div class="access-status-expired" style="color: #f43f5e; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">
+                                        <svg class="w-3 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Gagal Diproses
+                                    </div>
+                                @elseif (auth()->user() && auth()->user()->role === 'admin')
                                     <div class="access-status-approved">
                                         <svg class="w-3.5 h-3.5 text-green-400 mr-1" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24"

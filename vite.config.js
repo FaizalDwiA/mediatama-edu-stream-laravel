@@ -24,7 +24,6 @@ export default defineConfig(({
         ],
         server: {
             host: 'localhost',
-            open: `http://localhost:${env.SERVER_PORT || '174'}`,
         },
     };
 });
