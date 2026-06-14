@@ -154,6 +154,22 @@ class AccessRequestResource extends Resource
                     ->modalDescription('Apakah Anda yakin ingin menolak permintaan akses menonton ini?')
                     ->modalSubmitActionLabel('Tolak Akses'),
 
+                Tables\Actions\Action::make('revoke')
+                    ->label('Cabut Akses')
+                    ->icon('heroicon-o-no-symbol')
+                    ->color('danger')
+                    ->visible(fn(AccessRequest $record): bool => $record->status === 'approved')
+                    ->requiresConfirmation()
+                    ->action(function (AccessRequest $record): void {
+                        $record->update([
+                            'status' => 'rejected',
+                            'valid_until' => null,
+                        ]);
+                    })
+                    ->modalHeading('Cabut Akses Menonton')
+                    ->modalDescription('Apakah Anda yakin ingin mencabut akses menonton customer ini? Akses akan langsung dicabut.')
+                    ->modalSubmitActionLabel('Ya, Cabut Akses'),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ]);
