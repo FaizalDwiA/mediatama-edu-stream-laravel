@@ -205,15 +205,13 @@
                             (auth()->user() && auth()->user()->role === 'admin') ||
                             ($userRequest && $userRequest->status === 'approved' && !$isExpired) ||
                             $isCatApproved;
-
                         $gradIndex = ($loop->index % 6) + 1;
                     @endphp
 
                     @if ($isApproved)
-                        <a href="{{ route('video.watch', $video->id) }}" class="video-card mx-auto"
-                            style="max-width: 85% !important; width: 100% !important;">
-                        @else
-                            <div class="video-card">
+                        <a href="{{ route('video.watch', $video->id) }}" class="video-card">
+                    @else
+                        <div class="video-card">
                     @endif
                     <div class="video-thumbnail">
                         @if ($video->category)
