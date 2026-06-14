@@ -38,16 +38,16 @@ class CustomerVideoController extends Controller
 
         $videos = $query->get();
 
-        // Ambil semua kategori untuk filter pills
-        $categories = \App\Models\Category::all();
+        // Ambil semua kategori untuk filter pills dengan count videos
+        $categories = \App\Models\Category::withCount('videos')->get();
         $selectedCategoryId = $request->input('category');
 
         // Ambil semua data request milik user ini untuk dicocokkan di blade
-        $requests = AccessRequest::where('user_id', $userId)
-            ->get()
-            ->keyBy('video_id');
+        $allRequests = AccessRequest::where('user_id', $userId)->get();
+        $requests = $allRequests->whereNotNull('video_id')->keyBy('video_id');
+        $categoryRequests = $allRequests->whereNotNull('category_id')->keyBy('category_id');
 
-        return view('dashboard', compact('videos', 'requests', 'categories', 'selectedCategoryId'));
+        return view('dashboard', compact('videos', 'requests', 'categoryRequests', 'categories', 'selectedCategoryId'));
     }
 
     public function requestAccess($id)
@@ -74,6 +74,30 @@ class CustomerVideoController extends Controller
         return redirect()->back()->with('success', 'Permintaan akses berhasil dikirim ke Admin!');
     }
 
+    public function requestCategoryAccess($id)
+    {
+        $userId = auth()->id();
+
+        // Cek jika sudah pernah request agar tidak duplikat
+        $existing = AccessRequest::where('user_id', $userId)->where('category_id', $id)->first();
+
+        if ($existing) {
+            // Jika sudah ada (misal status rejected atau expired), reset menjadi pending
+            $existing->update([
+                'status' => 'pending',
+                'valid_until' => null
+            ]);
+        } else {
+            AccessRequest::create([
+                'user_id' => $userId,
+                'category_id' => $id,
+                'status' => 'pending'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Permintaan akses kategori berhasil dikirim ke Admin!');
+    }
+
     public function watch($id)
     {
         $userId = auth()->id();
@@ -86,19 +110,47 @@ class CustomerVideoController extends Controller
             return view('watch', compact('video', 'access'));
         }
 
-        // Cek izin akses di database
-        $access = AccessRequest::where('user_id', $userId)
+        // Cek izin akses di database (video individual)
+        $videoAccess = AccessRequest::where('user_id', $userId)
             ->where('video_id', $id)
             ->where('status', 'approved')
             ->first();
 
-        // Validasi Logika Waktu menggunakan Carbon (Inti Batas Waktu Soal)
-        if (!$access || !$access->valid_until || Carbon::now()->gt($access->valid_until)) {
-            // Jika datanya ada tapi waktunya lewat, ubah statusnya di database menjadi expired
-            if ($access) {
-                $access->update(['status' => 'expired']);
-            }
+        // Cek izin akses di database (kategori)
+        $categoryAccess = null;
+        if ($video->category_id) {
+            $categoryAccess = AccessRequest::where('user_id', $userId)
+                ->where('category_id', $video->category_id)
+                ->where('status', 'approved')
+                ->first();
+        }
 
+        // Validasi dan update status expired jika ada yang kadaluwarsa
+        if ($videoAccess && $videoAccess->valid_until && Carbon::now()->gt($videoAccess->valid_until)) {
+            $videoAccess->update(['status' => 'expired']);
+            $videoAccess = null;
+        }
+
+        if ($categoryAccess && $categoryAccess->valid_until && Carbon::now()->gt($categoryAccess->valid_until)) {
+            $categoryAccess->update(['status' => 'expired']);
+            $categoryAccess = null;
+        }
+
+        // Pilih akses yang paling lama (valid_until terjauh)
+        $access = null;
+        if ($videoAccess && $categoryAccess) {
+            if ($videoAccess->valid_until && $categoryAccess->valid_until) {
+                $access = $videoAccess->valid_until->gt($categoryAccess->valid_until) ? $videoAccess : $categoryAccess;
+            } else {
+                $access = $videoAccess->valid_until ? $videoAccess : $categoryAccess;
+            }
+        } elseif ($videoAccess) {
+            $access = $videoAccess;
+        } elseif ($categoryAccess) {
+            $access = $categoryAccess;
+        }
+
+        if (!$access) {
             return redirect()->route('dashboard')->with('error', 'Akses ditolak! Waktu menonton Anda belum dimulai atau sudah habis.');
         }
 
@@ -113,17 +165,48 @@ class CustomerVideoController extends Controller
 
         // Jika user adalah admin, bypass pengecekan akses
         if (!$user || $user->role !== 'admin') {
-            // Cek izin akses di database
-            $access = AccessRequest::where('user_id', $userId)
+            // Cek izin akses di database (video individual)
+            $videoAccess = AccessRequest::where('user_id', $userId)
                 ->where('video_id', $id)
                 ->where('status', 'approved')
                 ->first();
 
-            // Validasi akses aktif
-            if (!$access || !$access->valid_until || Carbon::now()->gt($access->valid_until)) {
-                if ($access) {
-                    $access->update(['status' => 'expired']);
+            // Cek izin akses di database (kategori)
+            $categoryAccess = null;
+            if ($video->category_id) {
+                $categoryAccess = AccessRequest::where('user_id', $userId)
+                    ->where('category_id', $video->category_id)
+                    ->where('status', 'approved')
+                    ->first();
+            }
+
+            // Validasi dan update status expired jika ada yang kadaluwarsa
+            if ($videoAccess && $videoAccess->valid_until && Carbon::now()->gt($videoAccess->valid_until)) {
+                $videoAccess->update(['status' => 'expired']);
+                $videoAccess = null;
+            }
+
+            if ($categoryAccess && $categoryAccess->valid_until && Carbon::now()->gt($categoryAccess->valid_until)) {
+                $categoryAccess->update(['status' => 'expired']);
+                $categoryAccess = null;
+            }
+
+            // Pilih akses yang paling lama
+            $access = null;
+            if ($videoAccess && $categoryAccess) {
+                if ($videoAccess->valid_until && $categoryAccess->valid_until) {
+                    $access = $videoAccess->valid_until->gt($categoryAccess->valid_until) ? $videoAccess : $categoryAccess;
+                } else {
+                    $access = $videoAccess->valid_until ? $videoAccess : $categoryAccess;
                 }
+            } elseif ($videoAccess) {
+                $access = $videoAccess;
+            } elseif ($categoryAccess) {
+                $access = $categoryAccess;
+            }
+
+            // Validasi akses aktif
+            if (!$access) {
                 abort(403, 'Akses ditolak!');
             }
         }

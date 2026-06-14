@@ -18,4 +18,9 @@ class Category extends Model
     {
         return $this->hasMany(Video::class);
     }
+
+    public function accessRequests(): HasMany
+    {
+        return $this->hasMany(AccessRequest::class);
+    }
 }

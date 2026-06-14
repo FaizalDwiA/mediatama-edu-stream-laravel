@@ -15,6 +15,7 @@ class AccessRequest extends Model
     protected $fillable = [
         'user_id',
         'video_id',
+        'category_id',
         'status',
         'valid_until',
     ];
@@ -31,5 +32,15 @@ class AccessRequest extends Model
     public function video(): BelongsTo
     {
         return $this->belongsTo(Video::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function isForCategory(): bool
+    {
+        return !is_null($this->category_id);
     }
 }

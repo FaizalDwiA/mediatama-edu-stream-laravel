@@ -34,8 +34,13 @@ class AccessRequestResource extends Resource
                 Select::make('video_id')
                     ->label('Video yang Diminta')
                     ->relationship('video', 'title')
-                    ->required()
-                    ->disabledOn('edit'),
+                    ->disabledOn('edit')
+                    ->required(fn($get) => !$get('category_id')),
+                Select::make('category_id')
+                    ->label('Kategori yang Diminta')
+                    ->relationship('category', 'name')
+                    ->disabledOn('edit')
+                    ->required(fn($get) => !$get('video_id')),
                 Select::make('status')
                     ->label('Status Persetujuan')
                     ->options([
@@ -56,7 +61,14 @@ class AccessRequestResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('user.name')->label('Nama Customer')->searchable(),
-                TextColumn::make('video.title')->label('Judul Video')->searchable(),
+                TextColumn::make('video.title')
+                    ->label('Judul Video')
+                    ->searchable()
+                    ->placeholder('-'),
+                TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->searchable()
+                    ->placeholder('-'),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -78,7 +90,29 @@ class AccessRequestResource extends Resource
                         'pending' => 'Pending',
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',
+                        'expired' => 'Expired',
                     ]),
+                Tables\Filters\Filter::make('type')
+                    ->label('Tipe Request')
+                    ->form([
+                        Select::make('type')
+                            ->label('Tipe')
+                            ->options([
+                                'video' => 'Per Video',
+                                'category' => 'Per Kategori',
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['type'] === 'video',
+                                fn (Builder $query) => $query->whereNotNull('video_id')
+                            )
+                            ->when(
+                                $data['type'] === 'category',
+                                fn (Builder $query) => $query->whereNotNull('category_id')
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
