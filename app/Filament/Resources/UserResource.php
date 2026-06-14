@@ -35,6 +35,7 @@ class UserResource extends Resource
                     ->avatar()
                     ->imageEditor()
                     ->maxSize(1024)
+                    ->fetchFileInformation(false)
                     ->nullable()
                     ->saveUploadedFileUsing(function ($file) {
                         $filename = 'avatar_' . uniqid() . '.webp';

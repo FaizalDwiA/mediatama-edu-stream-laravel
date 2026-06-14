@@ -54,6 +54,7 @@ class VideoResource extends Resource
                     ->image() // Memastikan file yang diupload wajib berupa gambar (jpg, png, webp)
                     ->imageEditor() // (Opsional) Memunculkan fitur potong/crop gambar bawaan Filament biar keren
                     ->maxSize(2048) // Batasi maksimal ukuran gambar 2MB
+                    ->fetchFileInformation(false)
                     ->nullable()
                     ->saveUploadedFileUsing(function ($file) {
                         $filename = 'thumbnail_' . uniqid() . '.webp';
@@ -90,6 +91,7 @@ class VideoResource extends Resource
                     ->visibility('public')
                     ->acceptedFileTypes(['video/mp4'])
                     ->maxSize(51200) // Maksimal 50MB
+                    ->fetchFileInformation(false)
                     ->required(),
             ])->columns(1);
     }

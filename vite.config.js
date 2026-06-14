@@ -17,13 +17,14 @@ export default defineConfig(({
                     'resources/css/watch.css',
                     'resources/js/app.js',
                     'resources/js/dashboard.js',
+                    'resources/js/watch.js',
                 ],
                 refresh: true,
             }),
         ],
         server: {
-            host: '127.0.0.1',
-            open: `http://127.0.0.1:${env.SERVER_PORT || '174'}`,
+            host: 'localhost',
+            open: `http://localhost:${env.SERVER_PORT || '174'}`,
         },
     };
 });
