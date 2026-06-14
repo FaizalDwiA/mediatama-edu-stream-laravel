@@ -38,6 +38,9 @@
     <div class="min-h-screen bg-[#0b0f19]">
         @include('layouts.navigation')
 
+        <!-- Sticky Category Bar -->
+        @stack('category_bar')
+
         <!-- Page Heading -->
         @isset($header)
             <header class="bg-white shadow">

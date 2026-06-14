@@ -800,12 +800,23 @@ a.video-card:hover .video-tag {
     transform: scale(0.96);
 }
 
+/* Sticky Category Bar */
+.category-sticky-bar {
+    position: sticky;
+    top: 64px; /* Tinggi navbar h-16 */
+    z-index: 40;
+    background-color: #0b0f19;
+    padding: 12px 0 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: 'Outfit', sans-serif !important;
+}
+
 /* ── YouTube-style Category Pills ── */
 .pill-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
 }
 
 /* Fade-edge gradients */

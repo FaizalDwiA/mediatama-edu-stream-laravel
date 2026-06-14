@@ -3,6 +3,39 @@
         @vite(['resources/css/dashboard.css'])
     @endpush
 
+    @push('category_bar')
+        <div id="categoryBarSticky" class="category-sticky-bar">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Category Pills Filter (YouTube mobile style) -->
+                <div class="pill-wrapper" id="pillWrapper">
+                    <!-- Left Arrow -->
+                    <button class="pill-arrow hidden" id="pillArrowLeft" aria-label="Geser kiri" onclick="scrollPills(-1)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+
+                    <div class="category-container" id="categoryContainer">
+                        <a href="{{ route('dashboard', request()->only('search')) }}"
+                            class="category-pill {{ !$selectedCategoryId ? 'active' : 'inactive' }}">Semua Video</a>
+
+                        @foreach ($categories as $category)
+                            <a href="{{ route('dashboard', array_merge(request()->only('search'), ['category' => $category->id])) }}"
+                                class="category-pill {{ $selectedCategoryId == $category->id ? 'active' : 'inactive' }}">{{ $category->name }}</a>
+                        @endforeach
+                    </div>
+
+                    <!-- Right Arrow -->
+                    <button class="pill-arrow" id="pillArrowRight" aria-label="Geser kanan" onclick="scrollPills(1)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endpush
+
     <div class="dashboard-wrapper py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
@@ -50,33 +83,6 @@
                     </button>
                 </div>
             @endif
-
-            <!-- Category Pills Filter (YouTube mobile style) -->
-            <div class="pill-wrapper" id="pillWrapper">
-                <!-- Left Arrow -->
-                <button class="pill-arrow hidden" id="pillArrowLeft" aria-label="Geser kiri" onclick="scrollPills(-1)">
-                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-
-                <div class="category-container" id="categoryContainer">
-                    <a href="{{ route('dashboard', request()->only('search')) }}"
-                        class="category-pill {{ !$selectedCategoryId ? 'active' : 'inactive' }}">Semua Video</a>
-
-                    @foreach ($categories as $category)
-                        <a href="{{ route('dashboard', array_merge(request()->only('search'), ['category' => $category->id])) }}"
-                            class="category-pill {{ $selectedCategoryId == $category->id ? 'active' : 'inactive' }}">{{ $category->name }}</a>
-                    @endforeach
-                </div>
-
-                <!-- Right Arrow -->
-                <button class="pill-arrow" id="pillArrowRight" aria-label="Geser kanan" onclick="scrollPills(1)">
-                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-            </div>
 
             <!-- Video Catalog Grid -->
             <div class="video-grid">
