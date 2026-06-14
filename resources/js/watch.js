@@ -137,9 +137,24 @@ function initVideoPlayer() {
     const speedIndicatorOverlay = document.getElementById('speedIndicatorOverlay');
 
     let isDragging = false;
+    let isInitialLoad = true;
+
+    function syncPlayPauseButton() {
+        if (mainVideo.paused) {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        } else {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+        }
+    }
+
+    // Sync initial state
+    syncPlayPauseButton();
 
     // 1. Play / Pause Control
     function togglePlay() {
+        isInitialLoad = false;
         if (mainVideo.paused) {
             mainVideo.play();
         } else {
@@ -221,16 +236,18 @@ function initVideoPlayer() {
     });
 
     mainVideo.addEventListener('play', () => {
-        playIcon.classList.add('hidden');
-        pauseIcon.classList.remove('hidden');
-        showOverlayIcon('play');
+        syncPlayPauseButton();
+        if (!isInitialLoad) {
+            showOverlayIcon('play');
+        }
         showControls();
     });
 
     mainVideo.addEventListener('pause', () => {
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
-        showOverlayIcon('pause');
+        syncPlayPauseButton();
+        if (!isInitialLoad) {
+            showOverlayIcon('pause');
+        }
         showControls();
     });
 
@@ -608,27 +625,38 @@ function initVideoPlayer() {
     const startPlay = () => {
         const playPromise = mainVideo.play();
         if (playPromise !== undefined) {
-            playPromise.catch(error => {
+            playPromise.then(() => {
+                setTimeout(() => {
+                    isInitialLoad = false;
+                }, 150);
+            }).catch(error => {
                 console.log('Unmuted autoplay blocked by browser. Trying muted autoplay...', error);
                 // Mute and try playing again
                 setVolume(0);
-                mainVideo.play().catch(err => {
+                mainVideo.play().then(() => {
+                    setTimeout(() => {
+                        isInitialLoad = false;
+                    }, 150);
+                }).catch(err => {
                     console.log('Muted autoplay also blocked:', err);
+                    isInitialLoad = false;
                 });
             });
+        } else {
+            isInitialLoad = false;
         }
     };
 
-    if (mainVideo.readyState >= 1) {
+    // Trigger autoplay when the page is fully loaded
+    if (document.readyState === 'complete') {
         startPlay();
     } else {
-        mainVideo.addEventListener('loadedmetadata', startPlay, {
-            once: true
-        });
+        window.addEventListener('load', startPlay);
     }
 
     // Fallback: play on first interaction on the page if still paused
     const playOnInteraction = () => {
+        isInitialLoad = false;
         if (mainVideo.paused) {
             mainVideo.play().catch(err => console.log('Interaction play blocked:', err));
         }

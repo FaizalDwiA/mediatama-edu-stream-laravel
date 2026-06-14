@@ -47,7 +47,7 @@
                                     </div>
                                 @elseif ($video->video_path)
                                     <div class="custom-video-player" id="videoPlayer">
-                                        <video id="mainVideo" src="{{ route('video.stream', $video->id) }}" autoplay
+                                        <video id="mainVideo" src="{{ route('video.stream', $video->id) }}"
                                             preload="auto" playsinline></video>
 
                                         <!-- 2x Speed Banner Overlay -->
