@@ -242,8 +242,8 @@
                 </x-dropdown>
             </div>
 
-            <!-- Mobile: Search Bar + Hamburger (YouTube style) -->
-            <div class="flex items-center justify-end gap-3 flex-1 ml-4 sm:hidden">
+            <!-- Mobile: Search Bar (Centered on mobile) -->
+            <div class="flex sm:hidden flex-1 justify-center items-center px-4">
                 <form action="{{ route('dashboard') }}" method="GET" class="w-full max-w-[180px] min-[400px]:max-w-[240px] flex items-center justify-center">
                     @if (request('category'))
                         <input type="hidden" name="category" value="{{ request('category') }}">
@@ -266,8 +266,10 @@
                         </div>
                     </div>
                 </form>
+            </div>
 
-                <!-- Hamburger -->
+            <!-- Mobile: Hamburger (Right-aligned on mobile) -->
+            <div class="flex items-center sm:hidden">
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none focus:bg-slate-800 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
