@@ -109,22 +109,23 @@ function initVideoPlayer() {
     if (!videoPlayer || !mainVideo) return;
 
     const playPauseBtn = document.getElementById('playPauseBtn');
-    const playIcon = playPauseBtn.querySelector('.play-icon');
-    const pauseIcon = playPauseBtn.querySelector('.pause-icon');
-    const rewindBtn = document.getElementById('rewindBtn');
-    const forwardBtn = document.getElementById('forwardBtn');
+    const playIcon = playPauseBtn ? playPauseBtn.querySelector('.play-icon') : null;
+    const pauseIcon = playPauseBtn ? playPauseBtn.querySelector('.pause-icon') : null;
     const muteBtn = document.getElementById('muteBtn');
-    const volumeUpIcon = muteBtn.querySelector('.volume-up-icon');
-    const volumeMuteIcon = muteBtn.querySelector('.volume-mute-icon');
+    const volumeUpIcon = muteBtn ? muteBtn.querySelector('.volume-up-icon') : null;
+    const volumeMuteIcon = muteBtn ? muteBtn.querySelector('.volume-mute-icon') : null;
     const volumeSlider = document.getElementById('volumeSlider');
     const currentTimeEl = document.getElementById('currentTime');
     const durationTimeEl = document.getElementById('durationTime');
-    const speedBtn = document.getElementById('speedBtn');
-    const speedOptions = document.getElementById('speedOptions');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const settingsSpeedOpt = document.getElementById('settingsSpeedOpt');
+    const settingsFullscreenOpt = document.getElementById('settingsFullscreenOpt');
+    const currentSpeedVal = document.getElementById('currentSpeedVal');
+    const currentFullscreenVal = document.getElementById('currentFullscreenVal');
+    const speedSubmenu = document.getElementById('speedSubmenu');
+    const backToSettings = document.getElementById('backToSettings');
     const speedItems = document.querySelectorAll('.speed-item');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const fullscreenEnter = fullscreenBtn.querySelector('.fullscreen-enter');
-    const fullscreenExit = fullscreenBtn.querySelector('.fullscreen-exit');
     const progressArea = document.getElementById('progressArea');
     const hoverTime = document.getElementById('hoverTime');
     const bufferProgress = document.getElementById('bufferProgress');
@@ -138,8 +139,25 @@ function initVideoPlayer() {
 
     let isDragging = false;
     let isInitialLoad = true;
+    let showRemainingTime = false;
+
+    function updateTimeDisplay() {
+        if (!currentTimeEl || !durationTimeEl) return;
+        const current = mainVideo.currentTime;
+        const duration = mainVideo.duration || 0;
+        
+        if (showRemainingTime) {
+            const remaining = duration - current;
+            currentTimeEl.textContent = `-${formatTime(remaining)}`;
+        } else {
+            currentTimeEl.textContent = formatTime(current);
+        }
+        
+        durationTimeEl.textContent = formatTime(duration);
+    }
 
     function syncPlayPauseButton() {
+        if (!playIcon || !pauseIcon) return;
         if (mainVideo.paused) {
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
@@ -162,7 +180,9 @@ function initVideoPlayer() {
         }
     }
 
-    playPauseBtn.addEventListener('click', togglePlay);
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', togglePlay);
+    }
 
     // ================= 2X SPEED ON HOLD LOGIC =================
     let holdTimeout;
@@ -196,7 +216,9 @@ function initVideoPlayer() {
                 speedIndicatorOverlay.classList.add('active');
             }
             // Temporarily update speed button text
-            speedBtn.textContent = '2.0x';
+            if (currentSpeedVal) {
+                currentSpeedVal.textContent = '2.0x';
+            }
         }, 450); // 450ms long press
     };
 
@@ -212,7 +234,9 @@ function initVideoPlayer() {
             const currentActiveSpeedItem = document.querySelector('.speed-item.active');
             if (currentActiveSpeedItem) {
                 const speed = parseFloat(currentActiveSpeedItem.dataset.speed);
-                speedBtn.textContent = speed === 1 ? 'Normal' : `${speed}x`;
+                if (currentSpeedVal) {
+                    currentSpeedVal.textContent = speed === 1 ? 'Normal' : `${speed}x`;
+                }
             }
         }
     };
@@ -284,10 +308,10 @@ function initVideoPlayer() {
     // 3. Time Update & Buffer Progress
     mainVideo.addEventListener('timeupdate', () => {
         if (isDragging) return;
+        updateTimeDisplay();
+
         const current = mainVideo.currentTime;
         const duration = mainVideo.duration || 0;
-        currentTimeEl.textContent = formatTime(current);
-
         if (duration > 0) {
             const percent = (current / duration) * 100;
             currentProgress.style.width = `${percent}%`;
@@ -296,12 +320,23 @@ function initVideoPlayer() {
     });
 
     mainVideo.addEventListener('loadedmetadata', () => {
-        durationTimeEl.textContent = formatTime(mainVideo.duration);
+        updateTimeDisplay();
     });
 
     // Set duration immediately if metadata is already loaded
     if (mainVideo.readyState >= 1) {
-        durationTimeEl.textContent = formatTime(mainVideo.duration);
+        updateTimeDisplay();
+    }
+
+    const timeDisplay = document.querySelector('.time-display');
+    if (timeDisplay) {
+        timeDisplay.style.cursor = 'pointer';
+        timeDisplay.style.userSelect = 'none';
+        timeDisplay.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showRemainingTime = !showRemainingTime;
+            updateTimeDisplay();
+        });
     }
 
     mainVideo.addEventListener('progress', () => {
@@ -467,92 +502,116 @@ function initVideoPlayer() {
         }
     });
 
-    // 5. Playback Speed Control
-    speedBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        speedOptions.classList.toggle('active');
-    });
+    // 5. Settings Menu (Speed & Fullscreen collapsed)
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (settingsMenu) settingsMenu.classList.toggle('active');
+            if (speedSubmenu) speedSubmenu.classList.remove('active');
+        });
+    }
+
+    if (settingsSpeedOpt) {
+        settingsSpeedOpt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (settingsMenu) settingsMenu.classList.remove('active');
+            if (speedSubmenu) speedSubmenu.classList.add('active');
+        });
+    }
+
+    if (backToSettings) {
+        backToSettings.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (speedSubmenu) speedSubmenu.classList.remove('active');
+            if (settingsMenu) settingsMenu.classList.add('active');
+        });
+    }
 
     document.addEventListener('click', () => {
-        speedOptions.classList.remove('active');
+        if (settingsMenu) settingsMenu.classList.remove('active');
+        if (speedSubmenu) speedSubmenu.classList.remove('active');
     });
 
     speedItems.forEach(item => {
         item.addEventListener('click', (e) => {
             const speed = parseFloat(e.target.dataset.speed);
             mainVideo.playbackRate = speed;
-            speedBtn.textContent = speed === 1 ? 'Normal' : `${speed}x`;
+            if (currentSpeedVal) {
+                currentSpeedVal.textContent = speed === 1 ? 'Normal' : `${speed}x`;
+            }
 
             speedItems.forEach(i => i.classList.remove('active'));
             e.target.classList.add('active');
+
+            if (speedSubmenu) speedSubmenu.classList.remove('active');
         });
     });
 
     // 6. Volume controls
     function setVolume(val) {
         mainVideo.volume = val;
-        volumeSlider.value = val;
+        if (volumeSlider) volumeSlider.value = val;
         if (val == 0) {
-            volumeUpIcon.classList.add('hidden');
-            volumeMuteIcon.classList.remove('hidden');
+            if (volumeUpIcon) volumeUpIcon.classList.add('hidden');
+            if (volumeMuteIcon) volumeMuteIcon.classList.remove('hidden');
             mainVideo.muted = true;
         } else {
-            volumeUpIcon.classList.remove('hidden');
-            volumeMuteIcon.classList.add('hidden');
+            if (volumeUpIcon) volumeUpIcon.classList.remove('hidden');
+            if (volumeMuteIcon) volumeMuteIcon.classList.add('hidden');
             mainVideo.muted = false;
         }
     }
 
-    volumeSlider.addEventListener('input', (e) => {
-        setVolume(e.target.value);
-    });
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', (e) => {
+            setVolume(e.target.value);
+        });
+    }
 
-    muteBtn.addEventListener('click', () => {
-        if (mainVideo.muted) {
-            setVolume(volumeSlider.value || 1);
-        } else {
-            mainVideo.muted = true;
-            volumeUpIcon.classList.add('hidden');
-            volumeMuteIcon.classList.remove('hidden');
-        }
-    });
+    if (muteBtn) {
+        muteBtn.addEventListener('click', () => {
+            if (mainVideo.muted) {
+                setVolume(volumeSlider ? volumeSlider.value : 1);
+            } else {
+                mainVideo.muted = true;
+                if (volumeUpIcon) volumeUpIcon.classList.add('hidden');
+                if (volumeMuteIcon) volumeMuteIcon.classList.remove('hidden');
+            }
+        });
+    }
 
-    // 7. Rewind / Forward (10 seconds)
-    rewindBtn.addEventListener('click', () => {
-        mainVideo.currentTime = Math.max(0, mainVideo.currentTime - 10);
-    });
-
-    forwardBtn.addEventListener('click', () => {
-        mainVideo.currentTime = Math.min(mainVideo.duration, mainVideo.currentTime + 10);
-    });
+    // 7. Rewind / Forward (10 seconds) - Button elements removed, keyboard hotkeys (ArrowLeft/Right, J/L) kept in Hotkeys Control section.
 
     // 8. Fullscreen Control
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
             videoPlayer.requestFullscreen().then(() => {
-                fullscreenEnter.classList.add('hidden');
-                fullscreenExit.classList.remove('hidden');
+                if (currentFullscreenVal) currentFullscreenVal.textContent = "Matikan";
             }).catch(err => {
                 console.error('Error entering fullscreen:', err);
             });
         } else {
             document.exitFullscreen().then(() => {
-                fullscreenEnter.classList.remove('hidden');
-                fullscreenExit.classList.add('hidden');
+                if (currentFullscreenVal) currentFullscreenVal.textContent = "Aktifkan";
             });
         }
     }
 
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    if (settingsFullscreenOpt) {
+        settingsFullscreenOpt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFullscreen();
+            if (settingsMenu) settingsMenu.classList.remove('active');
+        });
+    }
+
     mainVideo.addEventListener('dblclick', toggleFullscreen);
 
     document.addEventListener('fullscreenchange', () => {
         if (document.fullscreenElement === videoPlayer) {
-            fullscreenEnter.classList.add('hidden');
-            fullscreenExit.classList.remove('hidden');
+            if (currentFullscreenVal) currentFullscreenVal.textContent = "Matikan";
         } else {
-            fullscreenEnter.classList.remove('hidden');
-            fullscreenExit.classList.add('hidden');
+            if (currentFullscreenVal) currentFullscreenVal.textContent = "Aktifkan";
         }
     });
 
@@ -584,6 +643,11 @@ function initVideoPlayer() {
 
     videoPlayer.addEventListener('mousemove', showControls);
     videoPlayer.addEventListener('click', showControls);
+    videoPlayer.addEventListener('mouseleave', () => {
+        if (!mainVideo.paused) {
+            videoPlayer.classList.add('hide-controls');
+        }
+    });
 
     // 11. Keyboard Hotkeys Control
     document.addEventListener('keydown', (e) => {
@@ -621,11 +685,34 @@ function initVideoPlayer() {
     // Initial controls activation
     showControls();
 
+    // Fallback: play on first interaction on the page if still paused
+    function playOnInteraction(e) {
+        // If the click/interaction is inside the video player container, let the player's own listeners handle it
+        if (e && e.target && videoPlayer.contains(e.target)) {
+            document.removeEventListener('click', playOnInteraction);
+            document.removeEventListener('keydown', playOnInteraction);
+            return;
+        }
+
+        isInitialLoad = false;
+        if (mainVideo.paused) {
+            mainVideo.play().catch(err => console.log('Interaction play blocked:', err));
+        }
+        document.removeEventListener('click', playOnInteraction);
+        document.removeEventListener('keydown', playOnInteraction);
+    }
+
+    document.addEventListener('click', playOnInteraction);
+    document.addEventListener('keydown', playOnInteraction);
+
     // Explicit play trigger on load (autoload)
     const startPlay = () => {
         const playPromise = mainVideo.play();
         if (playPromise !== undefined) {
             playPromise.then(() => {
+                // Autoplay succeeded! Remove fallback listeners immediately to prevent first-click interception
+                document.removeEventListener('click', playOnInteraction);
+                document.removeEventListener('keydown', playOnInteraction);
                 setTimeout(() => {
                     isInitialLoad = false;
                 }, 150);
@@ -634,6 +721,9 @@ function initVideoPlayer() {
                 // Mute and try playing again
                 setVolume(0);
                 mainVideo.play().then(() => {
+                    // Muted autoplay succeeded! Remove fallback listeners immediately
+                    document.removeEventListener('click', playOnInteraction);
+                    document.removeEventListener('keydown', playOnInteraction);
                     setTimeout(() => {
                         isInitialLoad = false;
                     }, 150);
@@ -653,16 +743,4 @@ function initVideoPlayer() {
     } else {
         window.addEventListener('load', startPlay);
     }
-
-    // Fallback: play on first interaction on the page if still paused
-    const playOnInteraction = () => {
-        isInitialLoad = false;
-        if (mainVideo.paused) {
-            mainVideo.play().catch(err => console.log('Interaction play blocked:', err));
-        }
-        document.removeEventListener('click', playOnInteraction);
-        document.removeEventListener('keydown', playOnInteraction);
-    };
-    document.addEventListener('click', playOnInteraction);
-    document.addEventListener('keydown', playOnInteraction);
 }

@@ -108,24 +108,6 @@
                                                         </svg>
                                                     </button>
 
-                                                    <!-- Rewind 10s -->
-                                                    <button class="control-btn" id="rewindBtn"
-                                                        title="Mundur 10 detik (j)">
-                                                        <svg viewBox="0 0 24 24" fill="currentColor">
-                                                            <path
-                                                                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8zm-1.33 9.47c-.1-.38-.28-.68-.53-.89s-.57-.32-.95-.32c-.28 0-.53.07-.74.2s-.37.31-.48.54c-.11.23-.17.49-.17.78 0 .28.05.53.16.75s.26.39.46.52.43.19.69.19c.35 0 .63-.1.84-.3s.35-.49.42-.85h-.93v-.82h1.76v1.9c-.18.33-.45.6-.79.8s-.75.31-1.21.31c-.55 0-1.02-.15-1.42-.45s-.7-.72-.9-1.25-.3-1.14-.3-1.83.1-1.3.31-1.82.52-.94.92-1.23 1-.44 1.54-.44c.48 0 .9.11 1.25.32s.62.5.8.87c.18.37.28.8.29 1.29h-.92c-.01-.29-.07-.53-.16-.71s-.23-.3-.42-.37-.41-.1-.66-.1c-.38 0-.7.13-.94.39s-.41.63-.48 1.12c-.08.49-.07 1.02.02 1.6.09.58.28.98.57 1.2s.64.33.95.33c.33 0 .61-.08.83-.23s.38-.37.47-.64c.09-.27.13-.58.13-.93H10.67z" />
-                                                        </svg>
-                                                    </button>
-
-                                                    <!-- Fast Forward 10s -->
-                                                    <button class="control-btn" id="forwardBtn"
-                                                        title="Maju 10 detik (l)">
-                                                        <svg viewBox="0 0 24 24" fill="currentColor">
-                                                            <path
-                                                                d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8zm1.33 9.47c-.1-.38-.28-.68-.53-.89s-.57-.32-.95-.32c-.28 0-.53.07-.74.2s-.37.31-.48.54c-.11.23-.17.49-.17.78 0 .28.05.53.16.75s.26.39.46.52.43.19.69.19c.35 0 .63-.1.84-.3s.35-.49.42-.85h-.93v-.82h1.76v1.9c-.18.33-.45.6-.79.8s-.75.31-1.21.31c-.55 0-1.02-.15-1.42-.45s-.7-.72-.9-1.25-.3-1.14-.3-1.83.1-1.3.31-1.82.52-.94.92-1.23 1-.44 1.54-.44c.48 0 .9.11 1.25.32s.62.5.8.87c.18.37.28.8.29 1.29h-.92c-.01-.29-.07-.53-.16-.71s-.23-.3-.42-.37-.41-.1-.66-.1c-.38 0-.7.13-.94.39s-.41.63-.48 1.12c-.08.49-.07 1.02.02 1.6.09.58.28.98.57 1.2s.64.33.95.33c.33 0 .61-.08.83-.23s.38-.37.47-.64c.09-.27.13-.58.13-.93H13.67z" />
-                                                        </svg>
-                                                    </button>
-
                                                     <!-- Volume Controls -->
                                                     <div class="volume-container">
                                                         <button class="control-btn" id="muteBtn" title="Muted (m)">
@@ -152,11 +134,32 @@
                                                 </div>
 
                                                 <div class="right-controls">
-                                                    <!-- Playback Speed Button -->
-                                                    <div class="speed-container">
-                                                        <button class="speed-btn" id="speedBtn"
-                                                            title="Kecepatan Putar">1.0x</button>
-                                                        <div class="speed-options" id="speedOptions">
+                                                    <!-- Settings Menu (YouTube Style Cogwheel) -->
+                                                    <div class="settings-container">
+                                                        <button class="control-btn" id="settingsBtn" title="Setelan (s)">
+                                                            <svg class="settings-icon w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                                                                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.13,5.91,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                                                            </svg>
+                                                        </button>
+                                                        
+                                                        <div class="settings-menu" id="settingsMenu">
+                                                            <div class="settings-menu-item" id="settingsSpeedOpt">
+                                                                <span>Kecepatan</span>
+                                                                <span class="settings-value" id="currentSpeedVal">Normal</span>
+                                                            </div>
+                                                            <div class="settings-menu-item" id="settingsFullscreenOpt">
+                                                                <span>Layar Penuh</span>
+                                                                <span class="settings-value" id="currentFullscreenVal">Aktifkan</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="settings-submenu" id="speedSubmenu">
+                                                            <div class="submenu-header" id="backToSettings">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                                </svg>
+                                                                <span style="vertical-align: middle;">Kecepatan Putar</span>
+                                                            </div>
                                                             <div class="speed-item" data-speed="0.5">0.5x</div>
                                                             <div class="speed-item active" data-speed="1">Normal</div>
                                                             <div class="speed-item" data-speed="1.25">1.25x</div>
@@ -166,21 +169,6 @@
                                                             <div class="speed-item" data-speed="4">4.0x</div>
                                                         </div>
                                                     </div>
-
-                                                    <!-- Fullscreen Button -->
-                                                    <button class="control-btn" id="fullscreenBtn"
-                                                        title="Layar Penuh (f)">
-                                                        <svg class="fullscreen-enter" viewBox="0 0 24 24"
-                                                            fill="currentColor">
-                                                            <path
-                                                                d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
-                                                        </svg>
-                                                        <svg class="fullscreen-exit hidden" viewBox="0 0 24 24"
-                                                            fill="currentColor">
-                                                            <path
-                                                                d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
-                                                        </svg>
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

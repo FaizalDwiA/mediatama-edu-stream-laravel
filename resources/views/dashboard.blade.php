@@ -36,7 +36,7 @@
         </div>
     @endpush
 
-    <div class="dashboard-wrapper py-12">
+    <div class="dashboard-wrapper py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <!-- Toast Success / Error Notifications -->
@@ -88,20 +88,28 @@
                 @php
                     $selectedCategory = $categories->firstWhere('id', $selectedCategoryId);
                     $categoryRequest = $categoryRequests->get($selectedCategoryId);
-                    $catExpired = $categoryRequest && $categoryRequest->valid_until && \Carbon\Carbon::now()->gt($categoryRequest->valid_until);
+                    $catExpired =
+                        $categoryRequest &&
+                        $categoryRequest->valid_until &&
+                        \Carbon\Carbon::now()->gt($categoryRequest->valid_until);
                     $catApproved = $categoryRequest && $categoryRequest->status === 'approved' && !$catExpired;
                 @endphp
-                
+
                 @if ($selectedCategory && $selectedCategory->videos_count > 0)
-                    <div class="category-access-banner bg-slate-900 bg-opacity-60 border border-slate-700/50 rounded-2xl p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4" style="backdrop-filter: blur(8px);">
+                    <div class="category-access-banner bg-slate-900 bg-opacity-60 border border-slate-700/50 rounded-2xl p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4"
+                        style="backdrop-filter: blur(8px);">
                         <div class="flex items-center gap-4">
                             <div class="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-indigo-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 24px; height: 24px;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 24px; height: 24px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                    </path>
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-base font-bold text-white">Akses Kategori: {{ $selectedCategory->name }}</h2>
+                                <h2 class="text-base font-bold text-white">Akses Kategori: {{ $selectedCategory->name }}
+                                </h2>
                                 <p class="text-xs text-slate-400 mt-1">
                                     @if ($catApproved)
                                         Anda memiliki akses penuh ke seluruh video dalam kategori ini.
@@ -120,16 +128,23 @@
 
                         <div class="w-full md:w-auto flex justify-end">
                             @if ($catApproved)
-                                <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl text-xs font-semibold">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                <div
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl text-xs font-semibold">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        style="width: 16px; height: 16px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M5 13l4 4L19 7"></path>
                                     </svg>
-                                    <span>Akses Kategori Aktif s/d {{ $categoryRequest->valid_until->format('d M Y H:i') }}</span>
+                                    <span>Akses Kategori Aktif s/d
+                                        {{ $categoryRequest->valid_until->format('d M Y H:i') }}</span>
                                 </div>
                             @elseif ($categoryRequest && $categoryRequest->status === 'pending')
-                                <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl text-xs font-semibold animate-pulse">
-                                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4"></path>
+                                <div
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl text-xs font-semibold animate-pulse">
+                                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4"></path>
                                     </svg>
                                     <span>Menunggu Persetujuan Kategori</span>
                                 </div>
@@ -137,7 +152,8 @@
                                 <form action="{{ route('category.request', $selectedCategoryId) }}" method="POST"
                                     onsubmit="return confirm('Apakah Anda yakin ingin meminta ulang akses untuk kategori {{ $selectedCategory->name }}?');">
                                     @csrf
-                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition duration-200 cursor-pointer">
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition duration-200 cursor-pointer">
                                         Minta Ulang Akses Kategori
                                     </button>
                                 </form>
@@ -145,7 +161,8 @@
                                 <form action="{{ route('category.request', $selectedCategoryId) }}" method="POST"
                                     onsubmit="return confirm('Apakah Anda yakin ingin meminta ulang akses untuk kategori {{ $selectedCategory->name }}?');">
                                     @csrf
-                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-500/20 hover:shadow-rose-500/30 transition duration-200 cursor-pointer">
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-500/20 hover:shadow-rose-500/30 transition duration-200 cursor-pointer">
                                         Minta Ulang Akses Kategori
                                     </button>
                                 </form>
@@ -153,7 +170,8 @@
                                 <form action="{{ route('category.request', $selectedCategoryId) }}" method="POST"
                                     onsubmit="return confirm('Apakah Anda yakin ingin meminta akses untuk kategori {{ $selectedCategory->name }}?');">
                                     @csrf
-                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition duration-200 cursor-pointer">
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition duration-200 cursor-pointer">
                                         Minta Akses Kategori
                                     </button>
                                 </form>
@@ -180,10 +198,7 @@
                             $categoryRequest &&
                             $categoryRequest->valid_until &&
                             \Carbon\Carbon::now()->gt($categoryRequest->valid_until);
-                        $isCatApproved =
-                            $categoryRequest &&
-                            $categoryRequest->status === 'approved' &&
-                            !$isCatExpired;
+                        $isCatApproved = $categoryRequest && $categoryRequest->status === 'approved' && !$isCatExpired;
 
                         // User disetujui jika admin, atau disetujui secara individual, atau disetujui lewat kategori
                         $isApproved =
@@ -212,8 +227,8 @@
                             <div class="video-thumbnail-bg grad-{{ $gradIndex }}"></div>
                         @endif
                         @if ($isApproved && $video->video_path)
-                            <video class="preview-video" src="{{ asset('storage/' . $video->video_path) }}" muted loop
-                                playsinline preload="metadata"></video>
+                            <video class="preview-video" src="{{ asset('storage/' . $video->video_path) }}" muted
+                                loop playsinline preload="metadata"></video>
 
                             <!-- Mute/Unmute Overlay Button -->
                             <button class="mute-btn" title="Mute/Unmute">
@@ -252,28 +267,41 @@
                             </div>
                         @endif
                         @if ($video->status === 'processing')
-                            <div class="locked-overlay" style="background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px);">
+                            <div class="locked-overlay"
+                                style="background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px);">
                                 <div class="w-full h-full flex flex-col items-center justify-center p-2 text-center">
-                                    <div class="lock-icon-container" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
-                                        <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    <div class="lock-icon-container"
+                                        style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
+                                        <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"
+                                            style="width: 20px; height: 20px;">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="4" />
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                         </svg>
                                     </div>
-                                    <span class="overlay-title text-amber-500 font-bold" style="font-size: 0.875rem;">Sedang Diproses</span>
-                                    <span class="overlay-subtitle text-slate-400" style="font-size: 0.75rem;">Video sedang dikompresi</span>
+                                    <span class="overlay-title text-amber-500 font-bold"
+                                        style="font-size: 0.875rem;">Sedang Diproses</span>
+                                    <span class="overlay-subtitle text-slate-400" style="font-size: 0.75rem;">Video
+                                        sedang dikompresi</span>
                                 </div>
                             </div>
                         @elseif ($video->status === 'failed')
-                            <div class="locked-overlay" style="background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px);">
+                            <div class="locked-overlay"
+                                style="background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px);">
                                 <div class="w-full h-full flex flex-col items-center justify-center p-2 text-center">
-                                    <div class="lock-icon-container" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    <div class="lock-icon-container"
+                                        style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                         </svg>
                                     </div>
-                                    <span class="overlay-title text-red-500 font-bold" style="font-size: 0.875rem;">Proses Gagal</span>
-                                    <span class="overlay-subtitle text-slate-400" style="font-size: 0.75rem;">Hubungi Admin</span>
+                                    <span class="overlay-title text-red-500 font-bold"
+                                        style="font-size: 0.875rem;">Proses Gagal</span>
+                                    <span class="overlay-subtitle text-slate-400" style="font-size: 0.75rem;">Hubungi
+                                        Admin</span>
                                 </div>
                             </div>
                         @elseif ($isApproved)
@@ -406,17 +434,24 @@
                             <!-- Video Actions (Pill Buttons) -->
                             <div class="video-actions-wrapper" style="margin-top: 0.25rem !important;">
                                 @if ($video->status === 'processing')
-                                    <div class="access-status-pending" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">
-                                        <svg class="w-3 animate-spin mr-1 text-amber-400" fill="none" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    <div class="access-status-pending"
+                                        style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">
+                                        <svg class="w-3 animate-spin mr-1 text-amber-400" fill="none"
+                                            viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="3" />
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                         </svg>
                                         Sedang Diproses
                                     </div>
                                 @elseif ($video->status === 'failed')
-                                    <div class="access-status-expired" style="color: #f43f5e; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">
-                                        <svg class="w-3 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <div class="access-status-expired"
+                                        style="color: #f43f5e; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center;">
+                                        <svg class="w-3 mr-1 text-red-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         Gagal Diproses
                                     </div>
@@ -434,18 +469,25 @@
                                 @else
                                     @php
                                         // Cari valid_until terlama
-                                        $activeVideoAccess = ($userRequest && $userRequest->status === 'approved' && !$isExpired) ? $userRequest : null;
+                                        $activeVideoAccess =
+                                            $userRequest && $userRequest->status === 'approved' && !$isExpired
+                                                ? $userRequest
+                                                : null;
                                         $activeCatAccess = $isCatApproved ? $categoryRequest : null;
 
                                         $displayAccess = null;
                                         if ($activeVideoAccess && $activeCatAccess) {
-                                            $displayAccess = $activeVideoAccess->valid_until->gt($activeCatAccess->valid_until) ? $activeVideoAccess : $activeCatAccess;
+                                            $displayAccess = $activeVideoAccess->valid_until->gt(
+                                                $activeCatAccess->valid_until,
+                                            )
+                                                ? $activeVideoAccess
+                                                : $activeCatAccess;
                                         } else {
                                             $displayAccess = $activeVideoAccess ?: $activeCatAccess;
                                         }
                                     @endphp
 
-                                    @if($displayAccess)
+                                    @if ($displayAccess)
                                         <div class="access-status-approved">
                                             <svg class="w-3.5 h-3.5 text-green-400 mr-1" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24"
@@ -454,7 +496,7 @@
                                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
                                             Batas Akses: {{ $displayAccess->valid_until->format('d M Y H:i') }}
-                                            @if($displayAccess->category_id)
+                                            @if ($displayAccess->category_id)
                                                 (Kategori)
                                             @endif
                                         </div>
@@ -477,8 +519,8 @@
                     @if ($isApproved)
                         </a>
                     @else
-                        </div>
-                    @endif
+            </div>
+            @endif
         @empty
             <div
                 class="col-span-1 sm:col-span-2 lg:col-span-3 text-center text-slate-400 py-16 bg-slate-900 bg-opacity-40 border border-dashed border-slate-700 border-opacity-65 rounded-2xl">

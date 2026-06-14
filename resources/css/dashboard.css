@@ -871,6 +871,7 @@ a.video-card:hover .video-tag {
     z-index: 3;
     padding: 0;
     position: relative;
+    margin-bottom: 8px;
 }
 
 .pill-arrow:hover {
